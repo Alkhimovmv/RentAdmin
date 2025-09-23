@@ -134,9 +134,8 @@ docker-compose -f docker-compose.cloud.yml logs backend
 
 3. **Переменные окружения в Netlify:**
    ```
-   VITE_API_URL=https://your-server-ip/api
+   VITE_API_URL=https://87.242.103.146/api
    ```
-   (Замените на ваш реальный IP или домен)
 
 4. **Обновите .env на сервере:**
    ```bash
@@ -251,8 +250,8 @@ docker-compose -f docker-compose.cloud.yml up -d
 
 После выполнения всех шагов у вас будет:
 
-✅ **Backend на Cloud.ru:** `https://your-server-ip/api`
-✅ **Frontend на Netlify:** `https://your-app-name.netlify.app`
+✅ **Backend на Cloud.ru:** `https://87.242.103.146/api`
+✅ **Frontend на Netlify:** `https://vozmimenjaadmin.netlify.app`
 ✅ **Безопасное HTTPS соединение**
 ✅ **Автоматические деплои фронтенда**
 ✅ **Масштабируемая архитектура**

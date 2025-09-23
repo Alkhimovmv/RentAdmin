@@ -26,10 +26,10 @@ Publish directory: frontend/dist
 В настройках сайта (Site settings → Environment variables) добавьте:
 
 ```
-VITE_API_URL=https://your-cloud-server.com/api
+VITE_API_URL=https://87.242.103.146/api
 ```
 
-**Важно:** Замените `your-cloud-server.com` на реальный домен или IP вашего сервера на Cloud.ru
+**Backend на Cloud.ru:** IP адрес `87.242.103.146`
 
 ### 4. Настройка редиректов для SPA
 
@@ -90,8 +90,8 @@ Netlify автоматически выпустит Let's Encrypt сертифи
 ### CORS настройка на сервере
 Убедитесь, что в `.env.cloud` на сервере указан правильный FRONTEND_URL:
 ```
-FRONTEND_URL=https://your-site-name.netlify.app
-CORS_ORIGIN=https://your-site-name.netlify.app
+FRONTEND_URL=https://vozmimenjaadmin.netlify.app
+CORS_ORIGIN=https://vozmimenjaadmin.netlify.app
 ```
 
 ### HTTPS обязателен

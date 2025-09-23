@@ -1,0 +1,17 @@
+{
+  "name": "rentadmin",
+  "version": "1.0.0",
+  "description": "Полнофункциональное веб-приложение для администрирования аренды оборудования.",
+  "main": "demo-server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

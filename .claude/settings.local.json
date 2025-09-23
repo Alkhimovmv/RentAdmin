@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(npm create:*)",
+      "Bash(npm install)",
+      "Bash(npm install:*)",
+      "Bash(npx tailwindcss init:*)",
+      "Bash(npm run:*)",
+      "Bash(npm init:*)",
+      "Bash(node:*)",
+      "Read(//usr/lib/**)",
+      "Bash(sudo apt:*)",
+      "Bash(snap list:*)",
+      "Bash(snap install:*)",
+      "Bash(sudo:*)",
+      "Bash(curl:*)",
+      "Bash(sh)",
+      "Bash(chmod:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(grep:*)",
+      "Bash(xargs sed:*)",
+      "Bash(pkill:*)",
+      "Bash(lsof:*)",
+      "Bash(npm test)",
+      "Bash(npm test:*)",
+      "Bash(pg_isready:*)",
+      "Bash(xdg-open:*)",
+      "Bash(npm start)",
+      "Bash(find:*)",
+      "Bash(git init:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

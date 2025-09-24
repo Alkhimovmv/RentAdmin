@@ -26,8 +26,8 @@ const PORT = process.env.PORT || 3001;
 app.use(helmet());
 // CORS Configuration for development and production
 const corsOrigins = process.env.NODE_ENV === 'production'
-  ? [process.env.CORS_ORIGIN || 'https://your-netlify-domain.netlify.app']
-  : ['http://localhost:5173', 'http://localhost:3000', 'https://your-netlify-domain.netlify.app'];
+  ? [process.env.CORS_ORIGIN || 'https://vozmimenjaadmin.netlify.app']
+  : ['http://localhost:5173', 'http://localhost:3000', 'https://vozmimenjaadmin.netlify.app'];
 
 app.use(cors({
   origin: corsOrigins,

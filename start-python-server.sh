@@ -97,14 +97,14 @@ if curl -s http://localhost:8080/api/health > /dev/null; then
     log "✅ Локальный тест прошел успешно!"
 
     info "API endpoints доступны:"
-    echo "  • Health: http://87.242.103.146:8080/api/health"
-    echo "  • Root: http://87.242.103.146:8080/"
-    echo "  • Login: POST http://87.242.103.146:8080/api/auth/login"
-    echo "  • Equipment: http://87.242.103.146:8080/api/equipment"
+    echo "  • Health: https://87.242.103.146:8080/api/health"
+    echo "  • Root: https://87.242.103.146:8080/"
+    echo "  • Login: POST https://87.242.103.146:8080/api/auth/login"
+    echo "  • Equipment: https://87.242.103.146:8080/api/equipment"
 
     # Тест извне
     warning "Тестируем доступность извне..."
-    if curl -s --max-time 5 http://87.242.103.146:8080/api/health > /dev/null; then
+    if curl -s --max-time 5 https://87.242.103.146:8080/api/health > /dev/null; then
         log "🎉 УСПЕХ! Python сервер доступен извне!"
     else
         warning "Сервер запущен локально, но может быть недоступен извне"
@@ -124,6 +124,6 @@ echo "  • Логи: tail -f python-server.log"
 echo "  • Статус: ps aux | grep test-server"
 
 log "🌐 Обновите VITE_API_URL в Netlify на:"
-info "http://87.242.103.146:8080/api"
+info "https://87.242.103.146:8080/api"
 
 log "✨ Готово! Python API сервер работает!"

@@ -37,7 +37,7 @@ services:
       DB_PASSWORD: password
       JWT_SECRET: super-secret-jwt-key-for-rent-admin-2024
       PIN_CODE: 20031997
-      FRONTEND_URL: http://localhost:3000
+      CORS_ORIGIN: https://vozmimenjaadmin.netlify.app
     ports:
       - "3001:3001"
     depends_on:

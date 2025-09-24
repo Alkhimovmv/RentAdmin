@@ -67,7 +67,7 @@ sudo ufw status
 ### Шаг 6: ТЕСТ API
 ```bash
 # Тестировать API через nginx (должен работать!)
-curl -v http://87.242.103.146/api/health
+curl -v https://87.242.103.146/api/health
 
 # Если не работает, тестировать напрямую backend:
 curl -v http://localhost:3001/api/health
@@ -79,10 +79,10 @@ curl -v http://localhost:3001/api/health
 
 ### ✅ Должно работать:
 ```bash
-curl http://87.242.103.146/api/health
+curl https://87.242.103.146/api/health
 # Ответ: {"status":"ok","timestamp":"..."}
 
-curl http://87.242.103.146/
+curl https://87.242.103.146/
 # Ответ: "RentAdmin API Server - HTTP Mode (Port 80)"
 ```
 
@@ -130,7 +130,7 @@ docker-compose -f docker-compose.cloud.yml exec backend npm run db:migrate
 2. **Site settings → Environment variables**
 3. **Обновить VITE_API_URL:**
    ```
-   http://87.242.103.146/api
+   https://87.242.103.146/api
    ```
 4. **Нажать "Deploy site"**
 
@@ -159,7 +159,7 @@ sudo journalctl -u docker --tail=20
 - [ ] База данных доступна
 - [ ] Nginx запущен без HTTPS редиректа
 - [ ] Порты 80 и 3001 открыты в firewall
-- [ ] API отвечает: `curl http://87.242.103.146/api/health`
+- [ ] API отвечает: `curl https://87.242.103.146/api/health`
 - [ ] Netlify обновлен с правильным API URL
 
 **После выполнения всех шагов API должен работать!** 🎯

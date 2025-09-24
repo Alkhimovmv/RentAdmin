@@ -158,7 +158,7 @@ def main():
     print("🐍 RentAdmin Python Test Server")
     print(f"📡 Порт: {PORT}")
     print(f"🌐 URL: http://0.0.0.0:{PORT}")
-    print(f"🔗 Health: http://87.242.103.146:{PORT}/api/health")
+    print(f"🔗 Health: https://87.242.103.146:{PORT}/api/health")
     print("=" * 60)
 
     try:

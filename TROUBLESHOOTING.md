@@ -21,8 +21,8 @@ telnet 87.242.103.146 443
 telnet 87.242.103.146 3001
 
 # Проверить HTTP соединение
-curl -v http://87.242.103.146:3001/api/health
-curl -v http://87.242.103.146/api/health
+curl -v https://87.242.103.146:3001/api/health
+curl -v https://87.242.103.146/api/health
 ```
 
 ### 2. Подключение к серверу Cloud.ru
@@ -49,7 +49,7 @@ docker-compose -f docker-compose.cloud.yml logs database
 
 **В Netlify Environment Variables:**
 ```
-VITE_API_URL=http://87.242.103.146:3001/api
+VITE_API_URL=https://87.242.103.146:3001/api
 ```
 
 ### 2. Обновите nginx конфигурацию
@@ -137,12 +137,12 @@ sudo netstat -tlnp | grep -E "(80|443|3001)"
 1. **Обновить .env.production:**
    ```env
    # Временно для отладки
-   VITE_API_URL=http://87.242.103.146:3001/api
+   VITE_API_URL=https://87.242.103.146:3001/api
    ```
 
 2. **В Netlify Dashboard:**
    - Site settings → Environment variables
-   - Обновить `VITE_API_URL` на `http://87.242.103.146:3001/api`
+   - Обновить `VITE_API_URL` на `https://87.242.103.146:3001/api`
    - Redeploy сайт
 
 ---
@@ -193,7 +193,7 @@ docker-compose -f docker-compose.cloud.yml up -d --build
 ### Проверка с локального компьютера:
 ```bash
 # Тест API напрямую
-curl -X POST http://87.242.103.146:3001/api/auth/login \
+curl -X POST https://87.242.103.146:3001/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"test@test.com","password":"123456"}'
 ```

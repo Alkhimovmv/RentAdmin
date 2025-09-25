@@ -16,10 +16,11 @@ services:
     networks:
       - rent-admin-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      test: ["CMD-SHELL", "pg_isready -U postgres -d rent_admin"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
 
   # Backend API
   backend:
@@ -48,7 +49,7 @@ services:
     volumes:
       - ./backend/src/migrations:/app/src/migrations
       - ./backend/src/seeds:/app/src/seeds
-    command: sh -c "npm run db:migrate && npm start"
+    command: sh -c "sleep 15 && npm run db:migrate && npm start"
     restart: unless-stopped
 
 

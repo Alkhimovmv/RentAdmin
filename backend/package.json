@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon -r tsconfig-paths/register src/server.ts",
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "test": "jest",
     "db:migrate": "knex migrate:latest",
     "db:reset": "knex migrate:rollback && knex migrate:latest",
@@ -47,6 +47,7 @@
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.2.2"
   },

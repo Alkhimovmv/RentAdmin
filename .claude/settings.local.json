@@ -39,7 +39,9 @@
       "Bash(NODE_ENV=production PORT=3001 DB_HOST=localhost DB_PORT=5432 DB_NAME=rent_admin DB_USER=postgres DB_PASSWORD=password JWT_SECRET=test-secret PIN_CODE=20031997 CORS_ORIGIN=https://vozmimenjaadmin.netlify.app npm start)",
       "Bash(kill:*)",
       "Bash(git commit:*)",
-      "Bash(./scripts/fix-cors-nginx.sh:*)"
+      "Bash(./scripts/fix-cors-nginx.sh:*)",
+      "Bash(./scripts/final-test.sh:*)",
+      "Bash(./scripts/start-containers.sh:*)"
     ],
     "deny": [],
     "ask": []

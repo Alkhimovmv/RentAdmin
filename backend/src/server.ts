@@ -26,7 +26,7 @@ const PORT = process.env.PORT || 3001;
 app.use(helmet());
 
 // CORS Configuration - только один источник, правильно настроенный
-const corsOrigin = process.env.CORS_ORIGIN?.trim() || '*';
+const corsOrigin = '*';
 logger.info(`CORS origin: ${corsOrigin}`);
 
 app.use(cors({
@@ -58,7 +58,7 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
     cors: 'handled by backend',
-    origin: process.env.CORS_ORIGIN?.trim() || '*'
+    origin: '*'
   });
 });
 

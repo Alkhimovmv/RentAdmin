@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import helmet from 'helmet';
 import pino from 'pino';
 import { config } from 'dotenv';
@@ -24,8 +25,17 @@ const PORT = process.env.PORT || 3001;
 
 app.use(helmet());
 
-// ВАЖНО: CORS обрабатывается в nginx, НЕ в backend!
-logger.info('CORS обрабатывается в nginx, не в Express приложении');
+// CORS Configuration - только один источник, правильно настроенный
+const corsOrigin = process.env.CORS_ORIGIN?.trim() || 'https://vozmimenjaadmin.netlify.app';
+logger.info(`CORS origin: ${corsOrigin}`);
+
+app.use(cors({
+  origin: corsOrigin, // Только одно значение, без массива
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept'],
+  optionsSuccessStatus: 200 // Поддержка старых браузеров
+}));
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
@@ -47,7 +57,8 @@ app.get('/api/health', (req, res) => {
     status: 'OK',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
-    cors: 'handled by nginx'
+    cors: 'handled by backend',
+    origin: process.env.CORS_ORIGIN?.trim() || 'https://vozmimenjaadmin.netlify.app'
   });
 });
 
@@ -63,7 +74,7 @@ app.use((error: any, req: any, res: any, next: any) => {
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
     logger.info(`Сервер запущен на порту ${PORT}`);
-    logger.info('CORS обрабатывается в nginx');
+    logger.info(`CORS настроен для origin: ${corsOrigin}`);
   });
 }
 

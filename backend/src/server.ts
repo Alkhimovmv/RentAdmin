@@ -25,12 +25,18 @@ const PORT = process.env.PORT || 3001;
 
 app.use(helmet());
 // CORS Configuration for development and production
+const corsOrigin = process.env.CORS_ORIGIN || 'https://vozmimenjaadmin.netlify.app';
 const corsOrigins = process.env.NODE_ENV === 'production'
-  ? [process.env.CORS_ORIGIN || 'https://vozmimenjaadmin.netlify.app']
+  ? corsOrigin.split(',').map(origin => origin.trim()).filter(origin => origin)
   : ['http://localhost:5173', 'http://localhost:3000', 'https://vozmimenjaadmin.netlify.app'];
 
+// Убираем дубликаты
+const uniqueCorsOrigins = [...new Set(corsOrigins)];
+
+logger.info(`CORS origins: ${JSON.stringify(uniqueCorsOrigins)}`);
+
 app.use(cors({
-  origin: corsOrigins,
+  origin: uniqueCorsOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']

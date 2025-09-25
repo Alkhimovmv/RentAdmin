@@ -5,13 +5,10 @@ set -e
 
 SERVER_USER="user1"
 SERVER_HOST="87.242.103.146"
-PROJECT_PATH="/path/to/RentAdmin"
+PROJECT_PATH="/home/user1/RentAdmin"
 
 echo "🚀 Развертывание RentAdmin на сервере..."
 
-
-# 2. Подключаемся к серверу и обновляем код
-ssh $SERVER_USER@$SERVER_HOST << EOF
     # Останавливаем контейнеры
     echo "⏹️  Остановка контейнеров..."
     docker-compose down

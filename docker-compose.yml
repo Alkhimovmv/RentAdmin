@@ -51,19 +51,19 @@ services:
     command: sh -c "npm run db:migrate && npm start"
     restart: unless-stopped
 
-  # Frontend application
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: rent-admin-frontend
-    ports:
-      - "3000:80"
-    depends_on:
-      - backend
-    networks:
-      - rent-admin-network
-    restart: unless-stopped
+  # Frontend application (отключен - используется Netlify)
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   container_name: rent-admin-frontend
+  #   ports:
+  #     - "3000:80"
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - rent-admin-network
+  #   restart: unless-stopped
 
 volumes:
   postgres_data:

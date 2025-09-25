@@ -26,7 +26,7 @@ const PORT = process.env.PORT || 3001;
 app.use(helmet());
 
 // CORS Configuration - только один источник, правильно настроенный
-const corsOrigin = '*';
+const corsOrigin = process.env.CORS_ORIGIN?.trim() || 'https://vozmimenjaadmin.netlify.app';
 logger.info(`CORS origin: ${corsOrigin}`);
 
 app.use(cors({
@@ -58,7 +58,7 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
     cors: 'handled by backend',
-    origin: '*'
+    origin: process.env.CORS_ORIGIN?.trim() || 'https://vozmimenjaadmin.netlify.app'
   });
 });
 
@@ -74,7 +74,7 @@ app.use((error: any, req: any, res: any, next: any) => {
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
     logger.info(`Сервер запущен на порту ${PORT}`);
-    logger.info(`CORS настроен для origin: ${corsOrigin}`);
+    logger.info('CORS обрабатывается в nginx');
   });
 }
 

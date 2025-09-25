@@ -3,6 +3,8 @@
 ## Проблема
 Браузер показывает ошибку `ERR_CERT_AUTHORITY_INVALID` или `MOZILLA_PKIX_ERROR_SELF_SIGNED_CERT` при обращении к `https://87.242.103.146/api`
 
+✅ **ОБНОВЛЕНО**: Создан новый сертификат с правильными параметрами SAN (Subject Alternative Name) для IP 87.242.103.146
+
 ## Быстрое решение (в браузере)
 
 ### Chrome/Edge:
@@ -44,7 +46,34 @@
 ## Проверка
 После настройки откройте `https://87.242.103.146/api/health` - должен отображаться JSON без ошибок SSL.
 
-## Альтернатива для разработки
-Используйте флаги браузера:
-- Chrome: `--ignore-certificate-errors --ignore-ssl-errors --allow-running-insecure-content`
-- Firefox: `about:config` → `security.mixed_content.block_active_content` → `false`
+## ⚡ Автоматическое обновление сертификата
+
+Для пересоздания сертификата запустите:
+```bash
+./scripts/create-ssl-cert.sh
+docker-compose restart nginx
+```
+
+## 🔧 Альтернативы для разработки
+
+### Вариант 1: Флаги браузера
+- **Chrome**: `--ignore-certificate-errors --ignore-ssl-errors --allow-running-insecure-content`
+- **Firefox**: `about:config` → `security.mixed_content.block_active_content` → `false`
+
+### Вариант 2: Программный обход SSL
+```javascript
+// В JavaScript коде
+const apiCall = async (endpoint) => {
+  try {
+    const response = await fetch(`https://87.242.103.146/api/${endpoint}`);
+    return response;
+  } catch (sslError) {
+    console.warn('SSL Error, falling back to HTTP');
+    // Fallback на HTTP если HTTPS недоступен
+    return fetch(`http://87.242.103.146/api/${endpoint}`);
+  }
+};
+```
+
+### Вариант 3: Использование HTTP
+Временно используйте `http://87.242.103.146/api/` вместо HTTPS для тестирования.

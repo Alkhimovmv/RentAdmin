@@ -41,7 +41,8 @@
       "Bash(git commit:*)",
       "Bash(./scripts/fix-cors-nginx.sh:*)",
       "Bash(./scripts/final-test.sh:*)",
-      "Bash(./scripts/start-containers.sh:*)"
+      "Bash(./scripts/start-containers.sh:*)",
+      "Bash(./scripts/create-ssl-cert.sh:*)"
     ],
     "deny": [],
     "ask": []

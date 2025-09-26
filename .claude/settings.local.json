@@ -44,7 +44,9 @@
       "Bash(./scripts/start-containers.sh:*)",
       "Bash(./scripts/create-ssl-cert.sh:*)",
       "Bash(docker system prune:*)",
-      "Bash(./scripts/start-fullstack.sh:*)"
+      "Bash(./scripts/start-fullstack.sh:*)",
+      "Bash(./scripts/simple-deploy.sh:*)",
+      "Bash(nginx:*)"
     ],
     "deny": [],
     "ask": []

@@ -46,7 +46,9 @@
       "Bash(docker system prune:*)",
       "Bash(./scripts/start-fullstack.sh:*)",
       "Bash(./scripts/simple-deploy.sh:*)",
-      "Bash(nginx:*)"
+      "Bash(nginx:*)",
+      "Read(//home/maxim/rentadmin-deploy/**)",
+      "Bash(./quick-start.sh:*)"
     ],
     "deny": [],
     "ask": []

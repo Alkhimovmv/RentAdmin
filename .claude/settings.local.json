@@ -42,7 +42,9 @@
       "Bash(./scripts/fix-cors-nginx.sh:*)",
       "Bash(./scripts/final-test.sh:*)",
       "Bash(./scripts/start-containers.sh:*)",
-      "Bash(./scripts/create-ssl-cert.sh:*)"
+      "Bash(./scripts/create-ssl-cert.sh:*)",
+      "Bash(docker system prune:*)",
+      "Bash(./scripts/start-fullstack.sh:*)"
     ],
     "deny": [],
     "ask": []

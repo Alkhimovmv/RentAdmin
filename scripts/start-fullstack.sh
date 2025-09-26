@@ -13,24 +13,24 @@ echo "Database: PostgreSQL на порту 5432"
 echo "==============================================="
 echo ""
 
+# Сборка фронтенда
+echo "🔨 Сборка фронтенда..."
+cd frontend && npm run build && cd ..
+
 # Останавливаем существующие контейнеры если есть
 echo "🛑 Остановка существующих контейнеров..."
-docker-compose -f docker-compose-fullstack.yml down --remove-orphans 2>/dev/null || true
-
-# Очищаем old images
-echo "🧹 Очистка старых образов..."
-docker system prune -f --volumes 2>/dev/null || true
+docker-compose -f docker-compose-simple.yml down --remove-orphans 2>/dev/null || true
 
 # Собираем и запускаем контейнеры
-echo "🔨 Сборка и запуск контейнеров..."
-docker-compose -f docker-compose-fullstack.yml up --build -d
+echo "🔨 Запуск контейнеров..."
+docker-compose -f docker-compose-simple.yml up --build -d
 
 echo "⏳ Ждем запуска всех сервисов..."
 sleep 20
 
 # Проверяем статус контейнеров
 echo "📊 Статус контейнеров:"
-docker-compose -f docker-compose-fullstack.yml ps
+docker-compose -f docker-compose-simple.yml ps
 
 echo ""
 echo "🔍 Проверка доступности сервисов:"
@@ -74,11 +74,11 @@ echo "Нажмите 'Дополнительно' → 'Перейти на са�
 echo ""
 echo "📋 УПРАВЛЕНИЕ:"
 echo "▶️  Запустить: ./scripts/start-fullstack.sh"
-echo "⏹️  Остановить: docker-compose -f docker-compose-fullstack.yml down"
-echo "🔄 Перезапустить: docker-compose -f docker-compose-fullstack.yml restart"
-echo "📋 Логи: docker-compose -f docker-compose-fullstack.yml logs -f"
+echo "⏹️  Остановить: docker-compose -f docker-compose-simple.yml down"
+echo "🔄 Перезапустить: docker-compose -f docker-compose-simple.yml restart"
+echo "📋 Логи: docker-compose -f docker-compose-simple.yml logs -f"
 echo ""
 echo "🐛 В СЛУЧАЕ ПРОБЛЕМ:"
-echo "1. Проверить логи: docker-compose -f docker-compose-fullstack.yml logs"
-echo "2. Перезапустить: docker-compose -f docker-compose-fullstack.yml restart"
-echo "3. Полная пересборка: docker-compose -f docker-compose-fullstack.yml up --build --force-recreate -d"
+echo "1. Проверить логи: docker-compose -f docker-compose-simple.yml logs"
+echo "2. Перезапустить: docker-compose -f docker-compose-simple.yml restart"
+echo "3. Полная пересборка: docker-compose -f docker-compose-simple.yml up --build --force-recreate -d"

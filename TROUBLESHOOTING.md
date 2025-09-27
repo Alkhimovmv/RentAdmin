@@ -21,8 +21,8 @@ telnet 87.242.103.146 443
 telnet 87.242.103.146 3001
 
 # Проверить HTTP соединение
-curl -v https://87.242.103.146:3001/api/health
-curl -v https://87.242.103.146/api/health
+curl -v http://87.242.103.146:3001/api/health
+curl -v http://87.242.103.146/api/health
 ```
 
 ### 2. Подключение к серверу Cloud.ru
@@ -193,7 +193,7 @@ docker-compose -f docker-compose.cloud.yml up -d --build
 ### Проверка с локального компьютера:
 ```bash
 # Тест API напрямую
-curl -X POST https://87.242.103.146:3001/api/auth/login \
+curl -X POST http://87.242.103.146:3001/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"test@test.com","password":"123456"}'
 ```

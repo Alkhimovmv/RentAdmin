@@ -7,8 +7,8 @@ set -e
 
 echo "🚀 Запуск RentAdmin Full Stack"
 echo "==============================================="
-echo "Frontend: https://87.242.103.146/"
-echo "API: https://87.242.103.146/api/"
+echo "Frontend: http://87.242.103.146/"
+echo "API: http://87.242.103.146/api/"
 echo "Database: PostgreSQL на порту 5432"
 echo "==============================================="
 echo ""
@@ -45,7 +45,7 @@ fi
 
 # Проверяем backend
 echo -n "Backend API: "
-if curl -s -k https://87.242.103.146/api/health >/dev/null 2>&1; then
+if curl -s -k http://87.242.103.146/api/health >/dev/null 2>&1; then
     echo "✅ Online"
 else
     echo "❌ Offline"
@@ -53,7 +53,7 @@ fi
 
 # Проверяем frontend
 echo -n "Frontend: "
-if curl -s -k https://87.242.103.146/ >/dev/null 2>&1; then
+if curl -s -k http://87.242.103.146/ >/dev/null 2>&1; then
     echo "✅ Online"
 else
     echo "❌ Offline"
@@ -63,10 +63,10 @@ echo ""
 echo "🎉 Развертывание завершено!"
 echo ""
 echo "📱 ДОСТУП К ПРИЛОЖЕНИЮ:"
-echo "🌐 Frontend: https://87.242.103.146/"
-echo "🔌 API: https://87.242.103.146/api/"
-echo "📚 API Docs: https://87.242.103.146/docs"
-echo "❤️ Health Check: https://87.242.103.146/health"
+echo "🌐 Frontend: http://87.242.103.146/"
+echo "🔌 API: http://87.242.103.146/api/"
+echo "📚 API Docs: http://87.242.103.146/docs"
+echo "❤️ Health Check: http://87.242.103.146/health"
 echo ""
 echo "⚠️  SSL ПРЕДУПРЕЖДЕНИЕ:"
 echo "При первом доступе браузер покажет предупреждение о сертификате."

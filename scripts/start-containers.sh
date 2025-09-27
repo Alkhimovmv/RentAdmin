@@ -52,4 +52,4 @@ ssh -t $SERVER_USER@$SERVER_HOST << 'EOF'
 EOF
 
 echo "🎉 Контейнеры запущены!"
-echo "🌐 Тестируйте: https://87.242.103.146/api/health"
+echo "🌐 Тестируйте: http://87.242.103.146/api/health"

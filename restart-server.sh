@@ -69,7 +69,7 @@ if curl -s http://localhost:3001/api/health > /dev/null; then
     echo ""
     info "🌐 Сервер доступен по адресам:"
     echo "  • Local: http://localhost:3001/api/health"
-    echo "  • Remote: https://87.242.103.146:3001/api/health"
+    echo "  • Remote: http://87.242.103.146:3001/api/health"
 
 else
     error "❌ Сервер все еще не отвечает!"

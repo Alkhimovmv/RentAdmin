@@ -40,8 +40,8 @@ curl http://localhost:3001/api/health
 curl http://localhost:8080/api/health
 
 # Извне (с другого компьютера)
-curl https://87.242.103.146:3001/api/health
-curl https://87.242.103.146:8080/api/health
+curl http://87.242.103.146:3001/api/health
+curl http://87.242.103.146:8080/api/health
 ```
 
 ## Автоматическое переключение

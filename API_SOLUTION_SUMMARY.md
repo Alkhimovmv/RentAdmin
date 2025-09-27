@@ -61,8 +61,8 @@ VITE_API_URL=https://87.242.103.146:8080/api
 
 ```bash
 # Проверить какой сервер запущен
-curl https://87.242.103.146:3001/api/health
-curl https://87.242.103.146:8080/api/health
+curl http://87.242.103.146:3001/api/health
+curl http://87.242.103.146:8080/api/health
 
 # Логи серверов
 tail -f simple-server.log      # Node.js

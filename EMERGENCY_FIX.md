@@ -233,8 +233,8 @@ curl http://localhost/api/health
 curl http://localhost:3001/api/health
 
 # Извне (с другого компьютера)
-curl https://87.242.103.146/api/health
-curl https://87.242.103.146:3001/api/health
+curl http://87.242.103.146/api/health
+curl http://87.242.103.146:3001/api/health
 ```
 
 **Одно из решений ДОЛЖНО сработать!** 🎯

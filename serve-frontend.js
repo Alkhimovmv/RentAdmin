@@ -63,7 +63,7 @@ app.get('/info', (req, res) => {
     backend: BACKEND_URL,
     ssl: true,
     instructions: {
-      access: 'Откройте https://87.242.103.146:8443/ в браузере',
+      access: 'Откройте http://87.242.103.146:8443/ в браузере',
       ssl_warning: 'Нажмите "Дополнительно" → "Перейти на сайт (небезопасно)"',
       backend_start: 'cd backend && npm run db:migrate && npm start'
     }
@@ -89,10 +89,10 @@ https.createServer(sslOptions, app).listen(FRONTEND_PORT, '0.0.0.0', () => {
   console.log('🎉 RentAdmin Frontend запущен!');
   console.log('');
   console.log('🌐 ДОСТУП К ПРИЛОЖЕНИЮ:');
-  console.log(`Frontend: https://87.242.103.146:${FRONTEND_PORT}/`);
-  console.log(`API: https://87.242.103.146:${FRONTEND_PORT}/api/`);
-  console.log(`Info: https://87.242.103.146:${FRONTEND_PORT}/info`);
-  console.log(`Health: https://87.242.103.146:${FRONTEND_PORT}/health`);
+  console.log(`Frontend: http://87.242.103.146:${FRONTEND_PORT}/`);
+  console.log(`API: http://87.242.103.146:${FRONTEND_PORT}/api/`);
+  console.log(`Info: http://87.242.103.146:${FRONTEND_PORT}/info`);
+  console.log(`Health: http://87.242.103.146:${FRONTEND_PORT}/health`);
   console.log('');
   console.log('⚠️ ВАЖНО:');
   console.log('1. Запустите backend: cd backend && npm run db:migrate && npm start');

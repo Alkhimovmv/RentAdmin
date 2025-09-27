@@ -48,7 +48,10 @@
       "Bash(./scripts/simple-deploy.sh:*)",
       "Bash(nginx:*)",
       "Read(//home/maxim/rentadmin-deploy/**)",
-      "Bash(./quick-start.sh:*)"
+      "Bash(./quick-start.sh:*)",
+      "Bash(ip route:*)",
+      "Bash(./local-start.sh:*)",
+      "Bash(command -v:*)"
     ],
     "deny": [],
     "ask": []

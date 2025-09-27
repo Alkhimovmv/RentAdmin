@@ -26,7 +26,8 @@
     "knex": "^3.0.1",
     "pg": "^8.11.3",
     "pino": "^8.16.2",
-    "pino-pretty": "^10.2.3"
+    "pino-pretty": "^10.2.3",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

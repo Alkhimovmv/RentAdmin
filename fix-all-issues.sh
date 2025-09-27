@@ -23,7 +23,7 @@ sudo -u rentadmin npm install --save-dev @types/express @types/cors @types/jsonw
 
 # Копируем правильную nginx конфигурацию
 echo "📋 Копирование nginx конфигурации..."
-sudo cp /home/maxim/RentAdmin/nginx-simple.conf /opt/rentadmin/
+sudo cp /nginx-simple.conf /opt/rentadmin/
 
 # Компиляция без типов (для быстрого запуска)
 echo "🔨 Быстрая сборка бэкенда (игнорируем ошибки типов)..."
@@ -40,7 +40,7 @@ fi
 
 # Настройка фронтенда - переходим в локальную версию
 echo "🌐 Настройка фронтенда..."
-cd /home/maxim/RentAdmin/frontend
+cd /frontend
 
 # Создаем .env.production
 tee .env.production > /dev/null << EOF
@@ -60,7 +60,7 @@ sudo chown -R www-data:www-data /var/www/html/rentadmin
 
 # Настройка nginx
 echo "🌐 Настройка nginx..."
-cd /home/maxim/RentAdmin
+cd /
 sudo cp nginx-simple.conf /etc/nginx/nginx.conf
 
 # Проверка nginx

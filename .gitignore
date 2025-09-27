@@ -8,6 +8,16 @@ build/
 */dist/
 */build/
 
+# Но разрешаем отслеживать исходный код frontend
+!frontend/src/
+!frontend/public/
+!frontend/*.json
+!frontend/*.js
+!frontend/*.ts
+!frontend/*.md
+!frontend/*.html
+!frontend/.github/
+
 # Logs
 *.log
 npm-debug.log*

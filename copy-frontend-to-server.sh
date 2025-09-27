@@ -4,10 +4,10 @@ echo "📋 Копирование собранного фронтенда на �
 echo "=============================================="
 
 # Проверяем что фронтенд уже собран локально
-if [ ! -d "/home/maxim/RentAdmin/frontend/dist" ]; then
-    echo "❌ Сборка фронтенда не найдена в /home/maxim/RentAdmin/frontend/dist"
+if [ ! -d "/home/user1/RentAdmin/frontend/dist" ]; then
+    echo "❌ Сборка фронтенда не найдена в /home/user1/RentAdmin/frontend/dist"
     echo "Сначала соберите фронтенд локально:"
-    echo "cd /home/maxim/RentAdmin/frontend"
+    echo "cd /home/user1/RentAdmin/frontend"
     echo "npm run build"
     exit 1
 fi
@@ -23,7 +23,7 @@ echo "🧹 Очистка старых файлов..."
 sudo rm -rf /var/www/html/rentadmin/*
 
 echo "📋 Копирование нового фронтенда..."
-sudo cp -r /home/maxim/RentAdmin/frontend/dist/* /var/www/html/rentadmin/
+sudo cp -r /home/user1/RentAdmin/frontend/dist/* /var/www/html/rentadmin/
 
 # Права доступа
 echo "🔧 Настройка прав доступа..."

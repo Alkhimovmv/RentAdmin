@@ -5,10 +5,10 @@ import type { AxiosInstance } from 'axios';
 const API_SERVERS = process.env.NODE_ENV === 'development'
   ? [
       'http://localhost:3001/api',        // Локальная разработка
-      'https://87.242.103.146/api',       // Резервный HTTPS сервер
+      'http://87.242.103.146/api',        // Резервный HTTP сервер
     ]
   : [
-      'https://87.242.103.146/api',       // Production - HTTPS подключение к backend
+      import.meta.env.VITE_API_URL || 'http://87.242.103.146/api',  // Production - используем переменную окружения
     ];
 
 let currentApiUrl: string = import.meta.env.VITE_API_URL || API_SERVERS[0];

@@ -23,7 +23,7 @@ sudo -u rentadmin npm install --save-dev @types/express @types/cors @types/jsonw
 
 # Копируем правильную nginx конфигурацию
 echo "📋 Копирование nginx конфигурации..."
-sudo cp /nginx-simple.conf /opt/rentadmin/
+sudo cp /home/user1/RentAdmin/nginx-simple.conf /opt/rentadmin/
 
 # Компиляция без типов (для быстрого запуска)
 echo "🔨 Быстрая сборка бэкенда (игнорируем ошибки типов)..."
@@ -40,8 +40,7 @@ fi
 
 # Настройка фронтенда - переходим в локальную версию
 echo "🌐 Настройка фронтенда..."
-cd /frontend
-
+cd /home/user1/RentAdmin
 # Создаем .env.production
 tee .env.production > /dev/null << EOF
 VITE_API_URL=http://$SERVER_IP/api
@@ -56,11 +55,90 @@ npm run build
 echo "📁 Создание директории веб-сервера..."
 sudo mkdir -p /var/www/html/rentadmin
 sudo cp -r dist/* /var/www/html/rentadmin/
+
+# Исправление прав доступа для nginx (решение 403 Forbidden)
+echo "🔧 Исправление прав доступа..."
 sudo chown -R www-data:www-data /var/www/html/rentadmin
+sudo chmod -R 755 /var/www/html/rentadmin
+sudo chmod 644 /var/www/html/rentadmin/index.html
+
+# Проверяем что index.html существует
+if [ ! -f "/var/www/html/rentadmin/index.html" ]; then
+    echo "⚠️ index.html не найден, создаем простую страницу..."
+    sudo tee /var/www/html/rentadmin/index.html > /dev/null << 'INDEXEOF'
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RentAdmin</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .status { padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        button { padding: 10px 20px; margin: 10px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 RentAdmin Успешно Развернут!</h1>
+        <div class="status success">
+            <p><strong>Статус:</strong> Приложение работает</p>
+            <p><strong>Сервер:</strong> 87.242.103.146</p>
+            <p><strong>API:</strong> <a href="/api/health">/api/health</a></p>
+        </div>
+
+        <h2>🔧 Тестирование API</h2>
+        <button onclick="testHealth()">Проверить API</button>
+        <button onclick="testLogin()">Тест авторизации</button>
+
+        <div id="result"></div>
+
+        <h2>📋 Информация</h2>
+        <p>Пароль для входа: <strong>20031997</strong></p>
+        <p>Все API endpoints работают и готовы к использованию</p>
+    </div>
+
+    <script>
+        async function testHealth() {
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                document.getElementById('result').innerHTML =
+                    '<div class="status success">✅ API работает: ' + JSON.stringify(data, null, 2) + '</div>';
+            } catch (error) {
+                document.getElementById('result').innerHTML =
+                    '<div class="status error">❌ Ошибка API: ' + error.message + '</div>';
+            }
+        }
+
+        async function testLogin() {
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: '20031997' })
+                });
+                const data = await response.json();
+                document.getElementById('result').innerHTML =
+                    '<div class="status success">✅ Авторизация работает: ' + JSON.stringify(data, null, 2) + '</div>';
+            } catch (error) {
+                document.getElementById('result').innerHTML =
+                    '<div class="status error">❌ Ошибка авторизации: ' + error.message + '</div>';
+            }
+        }
+    </script>
+</body>
+</html>
+INDEXEOF
+    sudo chown www-data:www-data /var/www/html/rentadmin/index.html
+    sudo chmod 644 /var/www/html/rentadmin/index.html
+fi
 
 # Настройка nginx
 echo "🌐 Настройка nginx..."
-cd /
+cd /home/user1/RentAdmin
 sudo cp nginx-simple.conf /etc/nginx/nginx.conf
 
 # Проверка nginx

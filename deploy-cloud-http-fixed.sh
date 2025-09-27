@@ -182,8 +182,8 @@ cd /opt/rentadmin
 # Создаем резервную копию оригинальной конфигурации
 run_cmd cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.backup
 
-# Копируем нашу конфигурацию nginx
-run_cmd cp nginx-cloud-http.conf /etc/nginx/nginx.conf
+# Копируем простую рабочую конфигурацию nginx
+run_cmd cp nginx-simple.conf /etc/nginx/nginx.conf
 
 # Проверяем конфигурацию nginx
 echo "🔍 Проверка конфигурации nginx..."

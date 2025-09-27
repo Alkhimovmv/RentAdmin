@@ -79,7 +79,7 @@ sudo cp -r dist/* /var/www/html/rentadmin/
 
 # Исправление nginx конфигурации
 echo "🌐 Исправление nginx..."
-sudo cp /opt/rentadmin/nginx-cloud-http.conf /etc/nginx/nginx.conf
+sudo cp /opt/rentadmin/nginx-simple.conf /etc/nginx/nginx.conf
 
 # Проверка nginx
 if sudo nginx -t; then

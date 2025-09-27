@@ -20,8 +20,7 @@ echo "✅ Найден фронтенд проект"
 # Создаем правильный .env.production
 echo "🔧 Настройка окружения для production..."
 tee .env.production > /dev/null << EOF
-VITE_API_URL=http://$SERVER_IP/api
-NODE_ENV=production
+VITE_API_URL=http://localhost:3001/api
 EOF
 
 echo "✅ Создан .env.production:"
@@ -101,8 +100,9 @@ if curl -s http://localhost/ | grep -q "html"; then
     echo "🎉 ГОТОВО!"
     echo "=========="
     echo "🌍 Ваш проект доступен: http://$SERVER_IP/"
-    echo "🎯 API работает: http://$SERVER_IP/api"
-    echo "🏥 Health check: http://$SERVER_IP/health"
+    echo "🎯 API работает локально: http://localhost:3001/api"
+    echo "🏥 Health check: http://localhost:3001/health"
+    echo "💡 Фронтенд подключается к локальному API на том же сервере"
 
 else
     echo "❌ Проблема с загрузкой фронтенда"

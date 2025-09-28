@@ -5,9 +5,9 @@
 
 echo "🚀 Запуск RentAdmin на виртуальной машине..."
 
-# Остановка существующих контейнеров
-echo "📦 Остановка существующих Docker контейнеров..."
-docker-compose -f docker-compose.host.yml down 2>/dev/null || true
+# Полная очистка системы
+echo "🧹 Полная очистка существующих сервисов..."
+./clean-all.sh >/dev/null 2>&1
 
 # Остановка backend если запущен
 echo "🛑 Остановка backend процесса..."

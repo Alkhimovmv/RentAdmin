@@ -100,56 +100,58 @@ const FinancesPage: React.FC = () => {
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Финансовые итоги</h1>
-        <div className="flex space-x-4">
-          <CustomSelect
-            value={selectedMonth || `${currentYear}-${currentMonth.toString().padStart(2, '0')}`}
-            onChange={(value) => setSelectedMonth(value)}
-            options={monthOptions}
-            placeholder="Выберите месяц"
-          />
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col space-y-4">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Финансовые итоги</h1>
+        <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+          <div className="w-full sm:w-auto">
+            <CustomSelect
+              value={selectedMonth || `${currentYear}-${currentMonth.toString().padStart(2, '0')}`}
+              onChange={(value) => setSelectedMonth(value)}
+              options={monthOptions}
+              placeholder="Выберите месяц"
+            />
+          </div>
           <button
             onClick={() => setIsExpenseModalOpen(true)}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-medium"
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-medium w-full sm:w-auto"
           >
-            Добавить расход
+            <span className="sm:hidden">+ </span>Добавить расход
           </button>
         </div>
       </div>
 
       {/* Финансовая сводка за выбранный месяц */}
       {financialSummary && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-green-50 p-6 rounded-lg border border-green-200">
-            <div className="text-2xl font-bold text-green-600">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-green-50 p-4 sm:p-6 rounded-lg border border-green-200">
+            <div className="text-xl sm:text-2xl font-bold text-green-600">
               {financialSummary.total_revenue.toLocaleString()}₽
             </div>
             <div className="text-sm text-green-600">Общий доход</div>
             <div className="text-xs text-gray-500 mt-1">
-              Аренда: {financialSummary.rental_revenue.toLocaleString()}₽ +
-              Доставка: {financialSummary.delivery_revenue.toLocaleString()}₽
+              Аренда: {financialSummary.rental_revenue.toLocaleString()}₽<br className="sm:hidden" />
+              <span className="hidden sm:inline"> + </span>Доставка: {financialSummary.delivery_revenue.toLocaleString()}₽
             </div>
           </div>
 
-          <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-            <div className="text-2xl font-bold text-red-600">
+          <div className="bg-red-50 p-4 sm:p-6 rounded-lg border border-red-200">
+            <div className="text-xl sm:text-2xl font-bold text-red-600">
               {financialSummary.total_costs.toLocaleString()}₽
             </div>
             <div className="text-sm text-red-600">Общие расходы</div>
             <div className="text-xs text-gray-500 mt-1">
-              Доставка: {financialSummary.delivery_costs.toLocaleString()}₽ +
-              Операционные: {financialSummary.operational_expenses.toLocaleString()}₽
+              Доставка: {financialSummary.delivery_costs.toLocaleString()}₽<br className="sm:hidden" />
+              <span className="hidden sm:inline"> + </span>Операционные: {financialSummary.operational_expenses.toLocaleString()}₽
             </div>
           </div>
 
-          <div className={`p-6 rounded-lg border ${
+          <div className={`p-4 sm:p-6 rounded-lg border ${
             financialSummary.net_profit >= 0
               ? 'bg-blue-50 border-blue-200'
               : 'bg-orange-50 border-orange-200'
           }`}>
-            <div className={`text-2xl font-bold ${
+            <div className={`text-xl sm:text-2xl font-bold ${
               financialSummary.net_profit >= 0 ? 'text-blue-600' : 'text-orange-600'
             }`}>
               {financialSummary.net_profit.toLocaleString()}₽
@@ -161,8 +163,8 @@ const FinancesPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-            <div className="text-2xl font-bold text-gray-600">
+          <div className="bg-gray-50 p-4 sm:p-6 rounded-lg border border-gray-200">
+            <div className="text-xl sm:text-2xl font-bold text-gray-600">
               {financialSummary.total_rentals}
             </div>
             <div className="text-sm text-gray-600">Количество аренд</div>
@@ -203,38 +205,40 @@ const FinancesPage: React.FC = () => {
 
       {/* Список расходов */}
       <div className="bg-white shadow rounded-lg">
-        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-medium text-gray-900">Последние расходы</h3>
         </div>
         <div className="divide-y divide-gray-200">
           {expenses.slice(0, 10).map((expense) => (
-            <div key={expense.id} className="px-6 py-4 flex items-center justify-between">
-              <div className="flex-1">
-                <div className="text-sm font-medium text-gray-900">
-                  {expense.description}
+            <div key={expense.id} className="px-4 sm:px-6 py-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-gray-900">
+                    {expense.description}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    {formatDateShort(expense.date)}
+                    {expense.category && ` • ${expense.category}`}
+                  </div>
                 </div>
-                <div className="text-sm text-gray-500">
-                  {formatDateShort(expense.date)}
-                  {expense.category && ` • ${expense.category}`}
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="text-sm font-medium text-red-600">
-                  -{expense.amount.toLocaleString()}₽
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleEditExpense(expense)}
-                    className="text-blue-600 hover:text-blue-700 text-sm"
-                  >
-                    Изменить
-                  </button>
-                  <button
-                    onClick={() => handleDeleteExpense(expense.id)}
-                    className="text-red-600 hover:text-red-700 text-sm"
-                  >
-                    Удалить
-                  </button>
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                  <div className="text-sm font-medium text-red-600">
+                    -{expense.amount.toLocaleString()}₽
+                  </div>
+                  <div className="flex space-x-3">
+                    <button
+                      onClick={() => handleEditExpense(expense)}
+                      className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                    >
+                      Изменить
+                    </button>
+                    <button
+                      onClick={() => handleDeleteExpense(expense.id)}
+                      className="text-red-600 hover:text-red-700 text-sm font-medium"
+                    >
+                      Удалить
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

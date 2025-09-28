@@ -128,17 +128,26 @@ const RentalsPage: React.FC = () => {
   // };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
-        <div className="flex items-center space-x-4">
-          <h1 className="text-3xl font-bold text-gray-900">Список аренд</h1>
-          <div className="text-sm text-gray-600">
-            Найдено: {filteredRentals.length} из {rentals.length}
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col space-y-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-2 sm:space-y-0">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Список аренд</h1>
+            <div className="text-sm text-gray-600">
+              Найдено: {filteredRentals.length} из {rentals.length}
+            </div>
           </div>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-medium w-full sm:w-auto"
+          >
+            <span className="sm:hidden">+ </span>Добавить аренду
+          </button>
         </div>
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <label className="text-sm font-medium text-gray-700">Период:</label>
+
+        <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+          <label className="text-sm font-medium text-gray-700">Период:</label>
+          <div className="w-full sm:w-auto">
             <CustomSelect
               value={dateFilter}
               onChange={(value) => setDateFilter(value as DateFilter)}
@@ -150,61 +159,59 @@ const RentalsPage: React.FC = () => {
               placeholder="Выберите период"
             />
           </div>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-medium"
-          >
-            Добавить аренду
-          </button>
         </div>
       </div>
 
       <div className="bg-white shadow overflow-hidden sm:rounded-md">
         <ul className="divide-y divide-gray-200">
           {filteredRentals.map((rental) => (
-            <li key={rental.id} className="px-6 py-4">
-              <div className="flex items-center justify-between">
+            <li key={rental.id} className="px-4 sm:px-6 py-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center space-x-3">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(rental.status)}`}>
+                  <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border w-fit ${getStatusColor(rental.status)}`}>
                       {getStatusText(rental.status)}
                     </span>
                     <h3 className="text-lg font-medium text-gray-900 truncate">
                       {rental.equipment_name}
                     </h3>
                   </div>
-                  <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
-                    <span>👤 {rental.customer_name}</span>
-                    <span>📞 {rental.customer_phone}</span>
-                    <span>🕐 {formatDate(rental.start_date)} - {formatDate(rental.end_date)}</span>
-                    <span>💰 {rental.rental_price}₽</span>
-                    {!!rental.needs_delivery && (
-                      <span className="text-blue-600">🚚 Доставка: {rental.delivery_price}₽</span>
-                    )}
-                  </div>
-                  <div className="mt-1 text-sm text-gray-500">
-                    <span>📊 {getSourceText(rental.source)}</span>
-                    {rental.comment && <span className="ml-4">💬 {rental.comment}</span>}
+                  <div className="mt-2 space-y-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-sm text-gray-500">
+                      <span>👤 {rental.customer_name}</span>
+                      <span>📞 {rental.customer_phone}</span>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-sm text-gray-500">
+                      <span>🕐 {formatDate(rental.start_date)} - {formatDate(rental.end_date)}</span>
+                      <span>💰 {rental.rental_price}₽</span>
+                      {!!rental.needs_delivery && (
+                        <span className="text-blue-600">🚚 Доставка: {rental.delivery_price}₽</span>
+                      )}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      <span>📊 {getSourceText(rental.source)}</span>
+                      {rental.comment && <span className="block sm:inline sm:ml-4">💬 {rental.comment}</span>}
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
                   {rental.status !== 'completed' && (
                     <button
                       onClick={() => handleCompleteRental(rental)}
-                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
+                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm font-medium"
                     >
                       Завершить
                     </button>
                   )}
                   <button
                     onClick={() => handleEditRental(rental)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm font-medium"
                   >
                     Изменить
                   </button>
                   <button
                     onClick={() => handleDeleteRental(rental.id)}
-                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
+                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm font-medium"
                   >
                     Удалить
                   </button>

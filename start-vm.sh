@@ -32,6 +32,29 @@ if lsof -i :3001 > /dev/null 2>&1; then
     sleep 2
 fi
 
+# Проверка и сборка frontend
+echo "🌐 Проверка frontend..."
+cd frontend
+if [ ! -d "dist" ] || [ ! -f "dist/index.html" ]; then
+    echo "📦 Сборка frontend (папка dist не найдена или неполная)..."
+    npm install
+    if npm run build; then
+        if [ -f "dist/index.html" ]; then
+            echo "✅ Frontend собран успешно"
+        else
+            echo "❌ Сборка frontend завершилась, но файл dist/index.html не создан"
+            exit 1
+        fi
+    else
+        echo "❌ Сборка frontend завершилась с ошибками"
+        exit 1
+    fi
+else
+    echo "✅ Frontend уже собран"
+fi
+
+cd ..
+
 # Переход в директорию backend
 cd backend
 

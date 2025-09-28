@@ -98,11 +98,12 @@ if [ -d "frontend/dist" ]; then
         echo "✅ index.html найден"
     else
         echo "❌ index.html не найден в frontend/dist"
+        echo "⚠️  Запустите: cd frontend && npm run build"
         exit 1
     fi
 else
-    echo "❌ Frontend не собран (папка frontend/dist не найдена)"
-    exit 1
+    echo "⚠️  Frontend не собран (папка frontend/dist не найдена)"
+    echo "⚠️  Будет собран автоматически при запуске ./start-vm.sh"
 fi
 
 echo ""

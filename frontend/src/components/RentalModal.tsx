@@ -188,7 +188,7 @@ const RentalModal: React.FC<RentalModalProps> = ({
 
   const modalContent = (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4" style={{zIndex: 1000, margin: 0, padding: 0, top: 0, left: 0}}>
-      <div className="bg-white rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-2xl modal-container max-h-[95vh] sm:max-h-[90vh] overflow-y-auto" style={{position: 'relative', zIndex: 1001}}>
+      <div className="bg-white rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-2xl modal-container max-h-[95vh] sm:max-h-[90vh] overflow-y-auto my-4 sm:my-8" style={{position: 'relative', zIndex: 1001}}>
         <div>
           <h3 className="text-lg font-medium text-gray-900 mb-4">
             {rental ? 'Редактировать аренду' : 'Добавить новую аренду'}
@@ -428,18 +428,18 @@ const RentalModal: React.FC<RentalModalProps> = ({
               />
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
+            <div className="flex flex-col sm:flex-row sm:justify-end space-y-3 sm:space-y-0 sm:space-x-3 pt-6">
               <button
                 type="button"
                 onClick={onClose}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md w-full sm:w-auto order-2 sm:order-1"
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-3 rounded-md w-full sm:w-auto order-2 sm:order-1"
                 disabled={isLoading}
               >
                 Отмена
               </button>
               <button
                 type="submit"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md disabled:opacity-50 w-full sm:w-auto order-1 sm:order-2"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-md disabled:opacity-50 w-full sm:w-auto order-1 sm:order-2"
                 disabled={isLoading || !isFormValid()}
               >
                 {isLoading ? 'Сохранение...' : rental ? 'Обновить' : 'Создать'}

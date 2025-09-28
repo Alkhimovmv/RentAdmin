@@ -217,32 +217,32 @@ const SchedulePage: React.FC = () => {
 
   return (
     <div className="space-y-4 w-full h-full flex flex-col" style={{ height: 'calc(100vh - 4rem)' }}>
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">График аренд</h1>
-        <div className="text-lg font-medium text-gray-700">
-          {format(weekStart, 'dd MMMM', { locale: ru })} - {format(weekEnd, 'dd MMMM yyyy', { locale: ru })}
-        </div>
-        <div className="flex space-x-4">
-          <div className="flex space-x-2">
-            <button
-              onClick={goToPreviousWeek}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-md"
-            >
-              ← Предыдущая неделя
-            </button>
-            <button
-              onClick={goToToday}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-md"
-            >
-              Сегодня
-            </button>
-            <button
-              onClick={goToNextWeek}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-md"
-            >
-              Следующая неделя →
-            </button>
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center space-y-4 lg:space-y-0">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+          <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">График аренд</h1>
+          <div className="text-sm lg:text-lg font-medium text-gray-700 mt-2 sm:mt-0">
+            {format(weekStart, 'dd MMMM', { locale: ru })} - {format(weekEnd, 'dd MMMM yyyy', { locale: ru })}
           </div>
+        </div>
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+          <button
+            onClick={goToPreviousWeek}
+            className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-2 lg:px-3 py-2 rounded-md text-sm lg:text-base"
+          >
+            ← Предыдущая
+          </button>
+          <button
+            onClick={goToToday}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-2 lg:px-3 py-2 rounded-md text-sm lg:text-base"
+          >
+            Сегодня
+          </button>
+          <button
+            onClick={goToNextWeek}
+            className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-2 lg:px-3 py-2 rounded-md text-sm lg:text-base"
+          >
+            Следующая →
+          </button>
         </div>
       </div>
 
@@ -287,7 +287,7 @@ const SchedulePage: React.FC = () => {
           id="top-scrollbar"
           style={{ scrollbarWidth: 'thin' }}
         >
-          <div style={{ width: `${200 + equipmentInstances.length * 120}px`, height: '1px' }}></div>
+          <div style={{ width: `${150 + equipmentInstances.length * 80}px`, height: '1px' }}></div>
         </div>
 
         {/* Липкий заголовок */}
@@ -296,17 +296,17 @@ const SchedulePage: React.FC = () => {
             className="overflow-x-auto overflow-y-hidden"
             id="header-scroll"
           >
-            <div style={{ minWidth: `${200 + equipmentInstances.length * 120}px`, width: 'max-content' }}>
+            <div style={{ minWidth: `${150 + equipmentInstances.length * 80}px`, width: 'max-content' }}>
               <div className="flex">
-                <div className="w-48 p-3 bg-gray-50 font-medium text-gray-900 border-r border-gray-200 flex items-center">
+                <div className="w-32 lg:w-48 p-2 lg:p-3 bg-gray-50 font-medium text-gray-900 border-r border-gray-200 flex items-center text-xs lg:text-sm">
                   Время / Оборудование
                 </div>
                 {equipmentInstances.map((instance) => (
                   <div
                     key={instance.id}
-                    className="w-28 p-2 text-center font-medium bg-gray-50 text-gray-900 border-r border-gray-200"
+                    className="w-20 lg:w-28 p-1 lg:p-2 text-center font-medium bg-gray-50 text-gray-900 border-r border-gray-200"
                   >
-                    <div className="text-sm font-semibold truncate" title={instance.name}>
+                    <div className="text-xs lg:text-sm font-semibold truncate" title={instance.name}>
                       {instance.name}
                     </div>
                     <div className="text-xs text-gray-500">
@@ -324,15 +324,15 @@ const SchedulePage: React.FC = () => {
           className="overflow-x-auto overflow-y-auto max-w-full flex-1"
           id="content-scroll"
         >
-          <div style={{ minWidth: `${200 + equipmentInstances.length * 120}px`, width: 'max-content' }}>
+          <div style={{ minWidth: `${150 + equipmentInstances.length * 80}px`, width: 'max-content' }}>
 
             {/* Строки для каждого дня */}
             {weekDays.map((day) => (
               <div key={day.toISOString()} className="border-b border-gray-100">
                 {/* Заголовок дня */}
                 <div className="flex bg-blue-50">
-                  <div className="w-48 p-2 font-medium text-blue-900 border-r border-gray-200">
-                    <div className="text-sm">
+                  <div className="w-32 lg:w-48 p-1 lg:p-2 font-medium text-blue-900 border-r border-gray-200">
+                    <div className="text-xs lg:text-sm">
                       {format(day, 'EEEE', { locale: ru })}
                     </div>
                     <div className="text-xs text-blue-600">
@@ -342,7 +342,7 @@ const SchedulePage: React.FC = () => {
                   {equipmentInstances.map((instance) => (
                     <div
                       key={`${instance.id}-${day.toISOString()}-header`}
-                      className="w-28 p-2 bg-blue-50 border-r border-gray-200"
+                      className="w-20 lg:w-28 p-1 lg:p-2 bg-blue-50 border-r border-gray-200"
                     />
                   ))}
                 </div>
@@ -350,7 +350,7 @@ const SchedulePage: React.FC = () => {
                 {/* Часы дня */}
                 {timeSlots.map((hour) => (
                   <div key={`${day.toISOString()}-${hour}`} className="flex hover:bg-gray-50">
-                    <div className="w-48 p-2 text-sm text-gray-600 border-r border-gray-200 flex items-center">
+                    <div className="w-32 lg:w-48 p-1 lg:p-2 text-xs lg:text-sm text-gray-600 border-r border-gray-200 flex items-center">
                       {hour.toString().padStart(2, '0')}:00 - {(hour + 1).toString().padStart(2, '0')}:00
                     </div>
                     {equipmentInstances.map((instance) => {
@@ -361,11 +361,11 @@ const SchedulePage: React.FC = () => {
                       return (
                         <div
                           key={`${instance.id}-${day.toISOString()}-${hour}`}
-                          className="w-28 h-8 border-r border-gray-200 flex items-center justify-center"
+                          className="w-20 lg:w-28 h-6 lg:h-8 border-r border-gray-200 flex items-center justify-center"
                         >
                           {rental ? (
                             <div
-                              className={`w-full h-6 rounded text-xs px-1 flex items-center justify-center cursor-pointer transition-all hover:shadow-md ${
+                              className={`w-full h-5 lg:h-6 rounded text-xs px-1 flex items-center justify-center cursor-pointer transition-all hover:shadow-md ${
                                 hasConflicts
                                   ? 'bg-red-500 text-white border-2 border-red-700 animate-pulse'
                                   : getStatusColor(rental.status)
@@ -381,13 +381,13 @@ const SchedulePage: React.FC = () => {
                                   </span>
                                 </span>
                               ) : (
-                                <span className="truncate">
+                                <span className="truncate text-xs">
                                   {rental.customer_name.split(' ')[0]}
                                 </span>
                               )}
                             </div>
                           ) : (
-                            <div className="w-full h-6 bg-green-100 rounded flex items-center justify-center">
+                            <div className="w-full h-5 lg:h-6 bg-green-100 rounded flex items-center justify-center">
                               <span className="text-xs text-green-600">✓</span>
                             </div>
                           )}

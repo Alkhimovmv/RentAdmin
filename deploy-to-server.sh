@@ -172,8 +172,18 @@ build_frontend() {
         sudo apt-get install -y nodejs
     fi
 
+    # Очистка и исправление прав для node_modules
+    if [ -d "node_modules" ]; then
+        log "Очистка существующих node_modules..."
+        sudo rm -rf node_modules
+        sudo rm -f package-lock.json
+    fi
+
+    # Исправление прав доступа
+    sudo chown -R $USER:$USER .
+
     # Установка зависимостей
-    npm ci
+    npm install
 
     # Сборка для production
     VITE_API_URL=http://87.242.103.146/api npm run build

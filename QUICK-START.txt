@@ -23,6 +23,10 @@ chmod +x deploy-to-server.sh
 chmod +x quick-start.sh
 ./quick-start.sh
 
+# ВАРИАНТ В: Исправление проблем с правами доступа
+chmod +x fix-permissions.sh
+./fix-permissions.sh
+
 ШАГ 4: Проверка работы
 ---------------------
 Откройте в браузере: http://87.242.103.146

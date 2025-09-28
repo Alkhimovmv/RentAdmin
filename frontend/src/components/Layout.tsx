@@ -60,7 +60,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Sidebar */}
       <div className={`
         fixed lg:relative lg:translate-x-0 z-50 lg:z-auto
-        flex flex-col w-64 bg-white shadow-lg h-full
+        flex flex-col w-64 sm:w-64 lg:w-64 bg-white shadow-lg h-full max-w-[75vw] sm:max-w-none
         transform transition-transform duration-300 ease-in-out
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>

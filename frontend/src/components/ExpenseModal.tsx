@@ -26,22 +26,24 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({
   });
 
   useEffect(() => {
-    if (expense) {
-      setFormData({
-        description: expense.description,
-        amount: expense.amount,
-        date: expense.date.split('T')[0],
-        category: expense.category || '',
-      });
-    } else {
-      setFormData({
-        description: '',
-        amount: 0,
-        date: new Date().toISOString().split('T')[0],
-        category: '',
-      });
+    if (isOpen) {
+      if (expense) {
+        setFormData({
+          description: expense.description,
+          amount: expense.amount,
+          date: expense.date.split('T')[0],
+          category: expense.category || '',
+        });
+      } else {
+        setFormData({
+          description: '',
+          amount: 0,
+          date: new Date().toISOString().split('T')[0],
+          category: '',
+        });
+      }
     }
-  }, [expense]);
+  }, [expense, isOpen]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,8 +63,8 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({
   if (!isOpen) return null;
 
   const modalContent = (
-    <div className="modal-fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 overflow-y-auto" style={{zIndex: 1000}}>
-      <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto" style={{zIndex: 1000}}>
+      <div className="bg-white rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-md max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
         <div>
           <h3 className="text-lg font-medium text-gray-900 mb-4">
             {expense ? 'Редактировать расход' : 'Добавить новый расход'}
@@ -127,18 +129,18 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({
               />
             </div>
 
-            <div className="flex justify-end space-x-3 pt-4">
+            <div className="flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
               <button
                 type="button"
                 onClick={onClose}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md"
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md w-full sm:w-auto order-2 sm:order-1"
                 disabled={isLoading}
               >
                 Отмена
               </button>
               <button
                 type="submit"
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md disabled:opacity-50"
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md disabled:opacity-50 w-full sm:w-auto order-1 sm:order-2"
                 disabled={isLoading}
               >
                 {isLoading ? 'Сохранение...' : expense ? 'Обновить' : 'Добавить расход'}

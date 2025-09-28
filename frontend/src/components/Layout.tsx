@@ -60,7 +60,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Sidebar */}
       <div className={`
         fixed lg:relative lg:translate-x-0 z-50 lg:z-auto
-        flex flex-col w-16 sm:w-64 lg:w-64 bg-white shadow-lg h-full
+        flex flex-col w-16 lg:w-64 bg-white shadow-lg h-full
         transform transition-transform duration-300 ease-in-out
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
@@ -96,8 +96,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               }`}
               title={item.label}
             >
-              <span className="text-lg lg:mr-3">{item.icon}</span>
-              <span className="hidden lg:inline text-sm">{item.label}</span>
+              <span className="text-xl lg:text-lg lg:mr-3">{item.icon}</span>
+              <span className="hidden lg:block text-sm">{item.label}</span>
             </Link>
           ))}
         </nav>
@@ -111,8 +111,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             className="flex lg:items-center justify-center lg:justify-start w-full px-2 lg:px-4 py-3 lg:py-3 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-100 hover:text-gray-900"
             title="Выйти"
           >
-            <span className="text-lg lg:mr-3">🚪</span>
-            <span className="hidden lg:inline text-sm">Выйти</span>
+            <span className="text-xl lg:text-lg lg:mr-3">🚪</span>
+            <span className="hidden lg:block text-sm">Выйти</span>
           </button>
         </div>
       </div>

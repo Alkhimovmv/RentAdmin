@@ -60,7 +60,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Sidebar */}
       <div className={`
         fixed lg:relative lg:translate-x-0 z-50 lg:z-auto
-        flex flex-col w-52 sm:w-64 lg:w-64 bg-white shadow-lg h-full max-w-[65vw] sm:max-w-none
+        flex flex-col w-16 sm:w-64 lg:w-64 bg-white shadow-lg h-full
         transform transition-transform duration-300 ease-in-out
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
@@ -71,49 +71,48 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
 
         {/* Mobile Header in Sidebar */}
-        <div className="lg:hidden flex items-center justify-between h-14 px-3 bg-indigo-600">
-          <div className="flex items-center">
-            <img src={logo} width={20} height={20} className="mr-2"/>
-            <h1 className="text-base font-bold text-white">Возьми меня</h1>
-          </div>
+        <div className="lg:hidden flex items-center justify-center h-14 bg-indigo-600 relative">
+          <img src={logo} width={24} height={24}/>
           <button
             onClick={closeMobileMenu}
-            className="text-white hover:bg-indigo-700 p-1 rounded-md"
+            className="absolute top-2 right-2 text-white hover:bg-indigo-700 p-1 rounded-md"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        <nav className="flex-1 px-3 lg:px-4 py-3 lg:py-4 space-y-1 lg:space-y-2">
+        <nav className="flex-1 px-1 lg:px-4 py-3 lg:py-4 space-y-2 lg:space-y-2">
           {menuItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
               onClick={closeMobileMenu}
-              className={`flex items-center px-3 lg:px-4 py-2 lg:py-3 text-sm font-medium rounded-md transition-colors ${
+              className={`flex lg:items-center justify-center lg:justify-start px-2 lg:px-4 py-3 lg:py-3 text-sm font-medium rounded-md transition-colors ${
                 isActive(item.path)
                   ? 'bg-indigo-100 text-indigo-700'
                   : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
               }`}
+              title={item.label}
             >
-              <span className="mr-2 lg:mr-3 text-base lg:text-lg">{item.icon}</span>
-              <span className="text-sm lg:text-sm">{item.label}</span>
+              <span className="text-lg lg:mr-3">{item.icon}</span>
+              <span className="hidden lg:inline text-sm">{item.label}</span>
             </Link>
           ))}
         </nav>
 
-        <div className="p-3 lg:p-4 border-t">
+        <div className="p-2 lg:p-4 border-t">
           <button
             onClick={() => {
               logout();
               closeMobileMenu();
             }}
-            className="flex items-center w-full px-3 lg:px-4 py-2 lg:py-3 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-100 hover:text-gray-900"
+            className="flex lg:items-center justify-center lg:justify-start w-full px-2 lg:px-4 py-3 lg:py-3 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-100 hover:text-gray-900"
+            title="Выйти"
           >
-            <span className="mr-2 lg:mr-3 text-base lg:text-lg">🚪</span>
-            <span className="text-sm">Выйти</span>
+            <span className="text-lg lg:mr-3">🚪</span>
+            <span className="hidden lg:inline text-sm">Выйти</span>
           </button>
         </div>
       </div>

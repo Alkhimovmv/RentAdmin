@@ -11,8 +11,26 @@ docker-compose -f docker-compose.host.yml down 2>/dev/null || true
 
 # Остановка backend если запущен
 echo "🛑 Остановка backend процесса..."
+if [ -f backend.pid ]; then
+    BACKEND_PID=$(cat backend.pid)
+    if kill -0 $BACKEND_PID 2>/dev/null; then
+        kill $BACKEND_PID
+        echo "🔄 Остановлен backend процесс (PID: $BACKEND_PID)"
+        sleep 2
+    fi
+    rm backend.pid
+fi
+
+# Дополнительная очистка
 pkill -f "node.*dist/server.js" 2>/dev/null || true
-sleep 2
+sleep 3
+
+# Проверяем, что порт 3001 свободен
+if lsof -i :3001 > /dev/null 2>&1; then
+    echo "⚠️  Порт 3001 всё ещё занят, принудительно освобождаем..."
+    lsof -ti :3001 | xargs -r kill -9
+    sleep 2
+fi
 
 # Переход в директорию backend
 cd backend
@@ -25,12 +43,17 @@ BACKEND_PID=$!
 # Ожидание запуска backend
 echo "⏳ Ожидание запуска backend..."
 for i in {1..30}; do
-    if curl -s http://localhost:3001/api/health > /dev/null 2>&1; then
+    # Проверяем, что процесс запущен и порт открыт
+    if lsof -i :3001 > /dev/null 2>&1 && curl -s --max-time 2 http://localhost:3001/api/health > /dev/null 2>&1; then
         echo "✅ Backend запущен успешно"
         break
     fi
     if [ $i -eq 30 ]; then
         echo "❌ Backend не запустился за 30 секунд"
+        echo "🔍 Проверяем процессы на порту 3001:"
+        lsof -i :3001 || echo "Порт 3001 не используется"
+        echo "🔍 Пробуем подключиться к health check:"
+        curl -v http://localhost:3001/api/health || echo "Health check недоступен"
         exit 1
     fi
     sleep 1

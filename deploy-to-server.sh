@@ -118,7 +118,22 @@ setup_project() {
     if [ -d "$PROJECT_DIR" ]; then
         warn "Директория $PROJECT_DIR уже существует. Обновление..."
         cd $PROJECT_DIR
-        sudo git pull origin main || error "Не удалось обновить репозиторий"
+
+        # Исправление проблемы с владением git репозитория
+        if [ -d ".git" ]; then
+            log "Настройка git конфигурации..."
+            sudo git config --global --add safe.directory $PROJECT_DIR
+            sudo chown -R $USER:$USER .git
+
+            # Попытка обновления репозитория
+            if git pull origin main 2>/dev/null; then
+                log "Репозиторий успешно обновлен"
+            else
+                warn "Не удалось обновить через git pull. Используются локальные файлы."
+            fi
+        else
+            log "Git репозиторий не найден, используются локальные файлы"
+        fi
     else
         log "Создание директории проекта..."
         sudo mkdir -p $PROJECT_DIR

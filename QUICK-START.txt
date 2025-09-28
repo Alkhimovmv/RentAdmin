@@ -11,11 +11,17 @@ mkdir -p /opt/rentadmin
 cd /opt/rentadmin
 
 # Скопируйте все файлы проекта в эту директорию
+# scp -r /path/to/RentAdmin/* root@87.242.103.146:/opt/rentadmin/
 
 ШАГ 3: Запуск развертывания
 ---------------------------
+# ВАРИАНТ А: Полное развертывание (рекомендуется)
 chmod +x deploy-to-server.sh
 ./deploy-to-server.sh
+
+# ВАРИАНТ Б: Быстрый запуск (если есть проблемы с git)
+chmod +x quick-start.sh
+./quick-start.sh
 
 ШАГ 4: Проверка работы
 ---------------------

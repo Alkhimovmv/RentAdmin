@@ -14,8 +14,12 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["node"],
+    "lib": ["ES2020"],
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "src/utils/testSetup.ts"]
 }

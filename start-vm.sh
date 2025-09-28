@@ -39,14 +39,29 @@ cd backend
 echo "🔧 Проверка backend..."
 if [ ! -f "dist/server.js" ]; then
     echo "📦 Сборка backend (файл dist/server.js не найден)..."
-    npm run build
-    if [ ! -f "dist/server.js" ]; then
-        echo "❌ Сборка backend не удалась"
+    if npm run build; then
+        if [ -f "dist/server.js" ]; then
+            echo "✅ Backend собран успешно"
+        else
+            echo "❌ Сборка завершилась, но файл dist/server.js не создан"
+            exit 1
+        fi
+    else
+        echo "❌ Сборка backend завершилась с ошибками"
         exit 1
     fi
-    echo "✅ Backend собран успешно"
 else
     echo "✅ Backend уже собран"
+    # Проверим, что сборка не устаревшая
+    if [ src/server.ts -nt dist/server.js ]; then
+        echo "🔄 Исходные файлы новее сборки, пересобираем..."
+        if npm run build; then
+            echo "✅ Backend пересобран успешно"
+        else
+            echo "❌ Пересборка backend завершилась с ошибками"
+            exit 1
+        fi
+    fi
 fi
 
 # Проверка зависимостей

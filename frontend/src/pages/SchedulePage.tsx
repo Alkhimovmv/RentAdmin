@@ -69,7 +69,7 @@ const SchedulePage: React.FC = () => {
   const timeSlots = generateTimeSlots();
 
   const getRentalForInstanceAndTime = (instanceId: string, date: Date, hour: number) => {
-    const [equipmentId, instanceNumber] = instanceId.split('-').map(Number);
+    const [equipmentId] = instanceId.split('-').map(Number);
 
     return rentals.find(rental => {
       const startDate = parseISO(rental.start_date);
@@ -86,7 +86,7 @@ const SchedulePage: React.FC = () => {
 
   // Функция для проверки пересечений аренд
   const getConflictingRentals = (instanceId: string, date: Date, hour: number) => {
-    const [equipmentId, instanceNumber] = instanceId.split('-').map(Number);
+    const [equipmentId] = instanceId.split('-').map(Number);
 
     const checkTime = new Date(date);
     checkTime.setHours(hour, 0, 0, 0);
@@ -98,7 +98,6 @@ const SchedulePage: React.FC = () => {
       const endDate = parseISO(rental.end_date);
 
       return rental.equipment_id === equipmentId &&
-             rental.equipment_instance === instanceNumber &&
              startDate < checkTimeEnd &&
              endDate > checkTime;
     });
@@ -118,7 +117,6 @@ const SchedulePage: React.FC = () => {
         const endDate2 = parseISO(otherRental.end_date);
 
         return rental.equipment_id === otherRental.equipment_id &&
-               rental.equipment_instance === otherRental.equipment_instance &&
                startDate1 < endDate2 &&
                endDate1 > startDate2;
       });
@@ -158,7 +156,7 @@ const SchedulePage: React.FC = () => {
             <div>📞 {rental.customer_phone}</div>
             <div>📅 {format(parseISO(rental.start_date), 'dd.MM.yyyy HH:mm', { locale: ru })} - {format(parseISO(rental.end_date), 'dd.MM.yyyy HH:mm', { locale: ru })}</div>
             <div>💰 {rental.rental_price}₽</div>
-            <div>📦 {rental.equipment_name} #{rental.equipment_instance}</div>
+            <div>📦 {rental.equipment_name}</div>
             <div className={`inline-block px-2 py-1 rounded text-xs ${getStatusColor(rental.status).replace('cursor-pointer transition-all hover:shadow-md', '')}`}>
               {getStatusText(rental.status)}
             </div>
@@ -266,7 +264,7 @@ const SchedulePage: React.FC = () => {
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   {conflictingRentals.slice(0, 5).map((conflict, index) => (
                     <li key={index}>
-                      <strong>{conflict.rental.customer_name}</strong> - {conflict.rental.equipment_name} #{conflict.rental.equipment_instance}
+                      <strong>{conflict.rental.customer_name}</strong> - {conflict.rental.equipment_name}
                       <span className="text-red-600"> (пересекается с {conflict.conflictsWith.length} другими арендами)</span>
                     </li>
                   ))}

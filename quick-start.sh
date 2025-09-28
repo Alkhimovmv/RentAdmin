@@ -91,7 +91,7 @@ quick_start() {
     npm install
 
     # Сборка для production
-    VITE_API_URL=http://87.242.103.146/api npm run build
+    VITE_API_URL=/api npm run build
     cd ..
 
     # Подготовка базы данных

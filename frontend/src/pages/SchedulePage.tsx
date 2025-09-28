@@ -227,19 +227,19 @@ const SchedulePage: React.FC = () => {
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
           <button
             onClick={goToPreviousWeek}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-2 lg:px-3 py-2 rounded-md text-sm lg:text-base"
+            className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 lg:px-4 py-3 rounded-md text-sm lg:text-base min-h-[44px] touch-manipulation"
           >
             ← Предыдущая
           </button>
           <button
             onClick={goToToday}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-2 lg:px-3 py-2 rounded-md text-sm lg:text-base"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 lg:px-4 py-3 rounded-md text-sm lg:text-base min-h-[44px] touch-manipulation"
           >
             Сегодня
           </button>
           <button
             onClick={goToNextWeek}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-2 lg:px-3 py-2 rounded-md text-sm lg:text-base"
+            className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 lg:px-4 py-3 rounded-md text-sm lg:text-base min-h-[44px] touch-manipulation"
           >
             Следующая →
           </button>

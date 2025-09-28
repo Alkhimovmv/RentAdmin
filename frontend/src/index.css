@@ -147,3 +147,55 @@ input[type="datetime-local"]:focus::-webkit-datetime-edit {
 .overflow-x-auto::-webkit-scrollbar-thumb:hover {
   background: #A0AEC0;
 }
+
+/* Мобильная оптимизация */
+@layer utilities {
+  /* Safe area utilities для мобильных устройств */
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .pt-safe {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+
+  /* Touch targets для мобильных устройств */
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Минимальная высота для кнопок на мобильных */
+  .min-h-touch {
+    min-height: 44px;
+  }
+}
+
+/* Оптимизация для мобильных устройств */
+@media (max-width: 640px) {
+  /* Предотвращение зума при фокусе на input */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  input[type="date"],
+  input[type="datetime-local"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Viewport height fixes для мобильных браузеров */
+.min-h-screen-mobile {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+/* Фикс для iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen-mobile {
+    min-height: -webkit-fill-available;
+  }
+}

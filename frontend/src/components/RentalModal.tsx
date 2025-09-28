@@ -187,8 +187,8 @@ const RentalModal: React.FC<RentalModalProps> = ({
   if (!isOpen) return null;
 
   const modalContent = (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4" style={{zIndex: 1000, margin: 0, padding: 0, top: 0, left: 0}}>
-      <div className="bg-white rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-2xl modal-container max-h-[95vh] sm:max-h-[90vh] overflow-y-auto my-4 sm:my-8" style={{position: 'relative', zIndex: 1001}}>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center p-2 sm:p-4 pt-4 pb-safe sm:pt-8 sm:pb-8" style={{zIndex: 1000}}>
+      <div className="bg-white rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-2xl modal-container max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-4rem)] overflow-y-auto" style={{position: 'relative', zIndex: 1001, marginTop: 'env(safe-area-inset-top)', marginBottom: 'env(safe-area-inset-bottom)'}}>
         <div>
           <h3 className="text-lg font-medium text-gray-900 mb-4">
             {rental ? 'Редактировать аренду' : 'Добавить новую аренду'}
@@ -428,18 +428,18 @@ const RentalModal: React.FC<RentalModalProps> = ({
               />
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:justify-end space-y-3 sm:space-y-0 sm:space-x-3 pt-6">
+            <div className="flex flex-col sm:flex-row sm:justify-end space-y-4 sm:space-y-0 sm:space-x-4 pt-8">
               <button
                 type="button"
                 onClick={onClose}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-3 rounded-md w-full sm:w-auto order-2 sm:order-1"
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-4 rounded-md w-full sm:w-auto order-2 sm:order-1 font-medium"
                 disabled={isLoading}
               >
                 Отмена
               </button>
               <button
                 type="submit"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-md disabled:opacity-50 w-full sm:w-auto order-1 sm:order-2"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-4 rounded-md disabled:opacity-50 w-full sm:w-auto order-1 sm:order-2 font-medium"
                 disabled={isLoading || !isFormValid()}
               >
                 {isLoading ? 'Сохранение...' : rental ? 'Обновить' : 'Создать'}

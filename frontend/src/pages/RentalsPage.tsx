@@ -139,7 +139,7 @@ const RentalsPage: React.FC = () => {
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-medium w-full sm:w-auto"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-md font-medium w-full sm:w-auto min-h-[44px] touch-manipulation"
           >
             <span className="sm:hidden">+ </span>Добавить аренду
           </button>
@@ -194,24 +194,24 @@ const RentalsPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
                   {rental.status !== 'completed' && (
                     <button
                       onClick={() => handleCompleteRental(rental)}
-                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm font-medium"
+                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded text-sm font-medium min-h-[44px] touch-manipulation"
                     >
                       Завершить
                     </button>
                   )}
                   <button
                     onClick={() => handleEditRental(rental)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm font-medium"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded text-sm font-medium min-h-[44px] touch-manipulation"
                   >
                     Изменить
                   </button>
                   <button
                     onClick={() => handleDeleteRental(rental.id)}
-                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm font-medium"
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded text-sm font-medium min-h-[44px] touch-manipulation"
                   >
                     Удалить
                   </button>

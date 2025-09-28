@@ -70,14 +70,14 @@ const EquipmentPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Управление оборудованием</h1>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Управление оборудованием</h1>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-medium"
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-md font-medium w-full sm:w-auto min-h-[44px] touch-manipulation"
         >
-          Добавить оборудование
+          <span className="sm:hidden">+ </span>Добавить оборудование
         </button>
       </div>
 
@@ -105,13 +105,13 @@ const EquipmentPage: React.FC = () => {
               key={item.id}
               className="border-b border-gray-200 px-6 py-4 hover:bg-gray-50"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
                 <div className="flex-1">
-                  <div className="flex items-center space-x-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
                     <h3 className="text-lg font-medium text-gray-900">
                       {item.name}
                     </h3>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium w-fit ${
                       item.quantity > 5
                         ? 'bg-green-100 text-green-800'
                         : item.quantity > 0
@@ -122,26 +122,26 @@ const EquipmentPage: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="mt-1 text-sm text-gray-500">
+                  <div className="mt-2 text-sm text-gray-500">
                     {item.description}
                   </div>
 
-                  <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
-                    <span>💰 Цена оборудования: {item.base_price}₽</span>
+                  <div className="mt-2 flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4 text-sm text-gray-500">
+                    <span>💰 Цена: {item.base_price}₽</span>
                     <span>📊 Общая стоимость: {(item.base_price * item.quantity).toLocaleString()}₽</span>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
                   <button
                     onClick={() => handleEditEquipment(item)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded text-sm font-medium min-h-[44px] touch-manipulation"
                   >
                     Изменить
                   </button>
                   <button
                     onClick={() => handleDeleteEquipment(item.id)}
-                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded text-sm font-medium min-h-[44px] touch-manipulation"
                   >
                     Удалить
                   </button>

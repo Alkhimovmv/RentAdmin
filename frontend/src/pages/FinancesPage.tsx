@@ -114,7 +114,7 @@ const FinancesPage: React.FC = () => {
           </div>
           <button
             onClick={() => setIsExpenseModalOpen(true)}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-medium w-full sm:w-auto"
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-md font-medium w-full sm:w-auto min-h-[44px] touch-manipulation"
           >
             <span className="sm:hidden">+ </span>Добавить расход
           </button>
@@ -228,13 +228,13 @@ const FinancesPage: React.FC = () => {
                   <div className="flex space-x-2 sm:space-x-3">
                     <button
                       onClick={() => handleEditExpense(expense)}
-                      className="text-blue-600 hover:text-blue-700 text-xs sm:text-sm font-medium whitespace-nowrap"
+                      className="text-blue-600 hover:text-blue-700 text-xs sm:text-sm font-medium whitespace-nowrap min-h-[44px] px-2 py-2 touch-manipulation"
                     >
                       Изменить
                     </button>
                     <button
                       onClick={() => handleDeleteExpense(expense.id)}
-                      className="text-red-600 hover:text-red-700 text-xs sm:text-sm font-medium whitespace-nowrap"
+                      className="text-red-600 hover:text-red-700 text-xs sm:text-sm font-medium whitespace-nowrap min-h-[44px] px-2 py-2 touch-manipulation"
                     >
                       Удалить
                     </button>

@@ -77,6 +77,11 @@ quick_start() {
     log "Сборка frontend..."
     cd frontend
 
+    # Проверка наличия правильного package.json
+    if ! grep -q '"build"' package.json 2>/dev/null; then
+        error "В package.json отсутствует скрипт build. Проверьте правильность копирования файлов."
+    fi
+
     # Очистка и исправление прав для node_modules
     if [ -d "node_modules" ]; then
         log "Очистка существующих node_modules..."
@@ -86,6 +91,10 @@ quick_start() {
 
     # Исправление прав доступа
     sudo chown -R $USER:$USER .
+
+    # Отображение доступных скриптов для отладки
+    log "Доступные npm скрипты:"
+    npm run
 
     # Установка зависимостей
     npm install

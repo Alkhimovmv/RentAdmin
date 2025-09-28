@@ -27,6 +27,10 @@ chmod +x quick-start.sh
 chmod +x fix-permissions.sh
 ./fix-permissions.sh
 
+# ВАРИАНТ Г: Исправление проблем с файлами проекта
+chmod +x fix-project-files.sh
+./fix-project-files.sh
+
 ШАГ 4: Проверка работы
 ---------------------
 Откройте в браузере: http://87.242.103.146

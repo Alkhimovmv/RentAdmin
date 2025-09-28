@@ -165,6 +165,11 @@ build_frontend() {
 
     cd frontend
 
+    # Проверка наличия правильного package.json
+    if ! grep -q '"build"' package.json 2>/dev/null; then
+        error "В package.json отсутствует скрипт build. Проверьте правильность копирования файлов."
+    fi
+
     # Установка Node.js если не установлен
     if ! command -v node &> /dev/null; then
         log "Установка Node.js..."
@@ -181,6 +186,10 @@ build_frontend() {
 
     # Исправление прав доступа
     sudo chown -R $USER:$USER .
+
+    # Отображение доступных скриптов для отладки
+    log "Доступные npm скрипты:"
+    npm run
 
     # Установка зависимостей
     npm install

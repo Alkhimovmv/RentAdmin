@@ -10,7 +10,6 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const { logout } = useAuth();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCompactMode, setIsCompactMode] = useState(() => {
     if (typeof window !== 'undefined') {
       return window.innerWidth < 900;
@@ -46,9 +45,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     return location.pathname.startsWith(path);
   };
 
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
 
   return (
     <div className="flex h-screen bg-gray-100">

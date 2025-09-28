@@ -1,0 +1,9 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: rentadmin_nginx
+    network_mode: host
+    volumes:
+      - ./nginx-host.conf:/etc/nginx/nginx.conf
+      - ./frontend/dist:/usr/share/nginx/html
+    restart: unless-stopped

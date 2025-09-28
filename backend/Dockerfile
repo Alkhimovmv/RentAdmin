@@ -1,47 +1,29 @@
-# Backend Dockerfile - Optimized for Production
-FROM node:18-alpine AS builder
+# Backend Dockerfile - Simplified
+FROM node:18-alpine
 
 WORKDIR /app
 
-# Install dependencies for building
+# Copy package files
 COPY package*.json ./
-RUN npm ci && npm cache clean --force
 
-# Copy source code and build
+# Install dependencies
+RUN npm install
+
+# Copy source code
 COPY . .
+
+# Build the application
 RUN npm run build
 
-FROM node:18-alpine AS production
+# Create directory for SQLite database
+RUN mkdir -p /app/data
 
-# Install security updates and dumb-init
-RUN apk update && apk upgrade && apk add --no-cache dumb-init sqlite
-
-WORKDIR /app
-
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S backend -u 1001 -G nodejs
-
-# Copy package files and install only production dependencies
-COPY package*.json ./
-RUN npm ci --only=production && npm cache clean --force
-
-# Copy built application and necessary files
-COPY --from=builder --chown=backend:nodejs /app/dist ./dist
-COPY --from=builder --chown=backend:nodejs /app/knexfile.js ./
-
-# Create directory for SQLite database and set permissions
-RUN mkdir -p /app/data && chown -R backend:nodejs /app
-
-# Switch to non-root user
-USER backend
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get(\`http://localhost:\${process.env.PORT || 3001}/api/health\`, (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
-
+# Expose port
 EXPOSE 3001
 
-# Use dumb-init for proper signal handling
-ENTRYPOINT ["dumb-init", "--"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get(\`http://localhost:\${process.env.PORT || 3001}/api/health\`, (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+
+# Start the application
 CMD ["node", "dist/server.js"]

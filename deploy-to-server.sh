@@ -195,7 +195,7 @@ build_frontend() {
 
     # Отображение доступных скриптов для отладки
     log "Доступные npm скрипты:"
-    npm run
+    cat package.json | grep -A 10 '"scripts"' || echo "Скрипты недоступны"
 
     # Установка зависимостей
     npm install

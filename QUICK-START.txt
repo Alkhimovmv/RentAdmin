@@ -31,6 +31,10 @@ chmod +x fix-permissions.sh
 chmod +x fix-project-files.sh
 ./fix-project-files.sh
 
+# ВАРИАНТ Д: Простой запуск без отладки (рекомендуется)
+chmod +x local-start.sh
+./local-start.sh
+
 ШАГ 4: Проверка работы
 ---------------------
 Откройте в браузере: http://87.242.103.146

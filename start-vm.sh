@@ -35,6 +35,24 @@ fi
 # Переход в директорию backend
 cd backend
 
+# Проверка и сборка backend
+echo "🔧 Проверка backend..."
+if [ ! -f "dist/server.js" ]; then
+    echo "📦 Сборка backend (файл dist/server.js не найден)..."
+    npm run build
+    if [ ! -f "dist/server.js" ]; then
+        echo "❌ Сборка backend не удалась"
+        exit 1
+    fi
+    echo "✅ Backend собран успешно"
+else
+    echo "✅ Backend уже собран"
+fi
+
+# Проверка зависимостей
+echo "📦 Установка зависимостей..."
+npm install
+
 # Запуск backend в фоне
 echo "⚙️  Запуск backend сервера..."
 nohup npm start > backend.log 2>&1 &
@@ -59,11 +77,23 @@ for i in {1..30}; do
         echo "🔍 Проверяем процессы на порту 3001:"
         lsof -i :3001 || echo "Порт 3001 не используется"
         echo "🔍 Проверяем логи backend:"
+        echo "Текущая директория: $(pwd)"
+        echo "Пользователь: $(whoami)"
+        echo "Домашняя директория: $HOME"
         if [ -f backend.log ]; then
             echo "--- Последние 10 строк backend.log ---"
             tail -10 backend.log
         else
             echo "Лог файл backend.log не найден"
+        fi
+        echo "Проверка файла dist/server.js:"
+        if [ -f "dist/server.js" ]; then
+            echo "✅ Файл dist/server.js существует"
+            ls -la dist/server.js
+        else
+            echo "❌ Файл dist/server.js не найден"
+            echo "Содержимое директории dist:"
+            ls -la dist/ 2>/dev/null || echo "Директория dist не существует"
         fi
         echo "🔍 Проверяем npm процесс:"
         if kill -0 $NPM_PID 2>/dev/null; then

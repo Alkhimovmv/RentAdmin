@@ -11,11 +11,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const { logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isCompactMode, setIsCompactMode] = useState(false);
+  const [isCompactMode, setIsCompactMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 900;
+    }
+    return false;
+  });
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsCompactMode(window.innerWidth < 900);
+      const width = window.innerWidth;
+      const shouldBeCompact = width < 900;
+      console.log('Screen width:', width, 'Compact mode:', shouldBeCompact);
+      setIsCompactMode(shouldBeCompact);
     };
 
     checkScreenSize();
@@ -44,6 +52,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="flex h-screen bg-gray-100">
+      {/* Debug info - remove in production */}
+      <div className="fixed top-0 right-0 bg-red-500 text-white p-2 text-xs z-[9999]">
+        Width: {typeof window !== 'undefined' ? window.innerWidth : 'loading'}px | Compact: {isCompactMode ? 'YES' : 'NO'}
+      </div>
       {/* Mobile Header */}
       <div className={`${isCompactMode ? 'block' : 'hidden'} fixed top-0 left-0 right-0 z-50 bg-indigo-600 px-4 py-3 flex items-center justify-between`}>
         <div className="flex items-center">

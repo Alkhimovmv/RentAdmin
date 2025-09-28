@@ -7,12 +7,12 @@ export class AnalyticsController {
     try {
       const monthlyRevenue = await db('rentals')
         .select(
-          db.raw('EXTRACT(YEAR FROM start_date) as year'),
-          db.raw('EXTRACT(MONTH FROM start_date) as month'),
+          db.raw("strftime('%Y', start_date) as year"),
+          db.raw("strftime('%m', start_date) as month"),
           db.raw('SUM(rental_price + delivery_price) as total_revenue'),
           db.raw('COUNT(*) as rental_count')
         )
-        .groupByRaw('EXTRACT(YEAR FROM start_date), EXTRACT(MONTH FROM start_date)')
+        .groupByRaw("strftime('%Y', start_date), strftime('%m', start_date)")
         .orderByRaw('year DESC, month DESC');
 
       const formattedData = monthlyRevenue.map((item: any) => ({
@@ -25,6 +25,7 @@ export class AnalyticsController {
 
       res.json(formattedData);
     } catch (error) {
+      console.error('Monthly revenue error:', error);
       res.status(500).json({ error: 'Ошибка получения месячной выручки' });
     }
   }
@@ -66,12 +67,12 @@ export class AnalyticsController {
 
       if (year && month) {
         rentalQuery = rentalQuery.whereRaw(
-          'EXTRACT(YEAR FROM start_date) = ? AND EXTRACT(MONTH FROM start_date) = ?',
-          [year, month]
+          "strftime('%Y', start_date) = ? AND strftime('%m', start_date) = ?",
+          [year.toString(), month.toString().padStart(2, '0')]
         );
         expenseQuery = expenseQuery.whereRaw(
-          'EXTRACT(YEAR FROM date) = ? AND EXTRACT(MONTH FROM date) = ?',
-          [year, month]
+          "strftime('%Y', date) = ? AND strftime('%m', date) = ?",
+          [year.toString(), month.toString().padStart(2, '0')]
         );
       }
 

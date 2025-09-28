@@ -52,36 +52,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Mobile Header */}
-      <div className={`${isCompactMode ? 'block' : 'hidden'} fixed top-0 left-0 right-0 z-50 bg-indigo-600 px-4 py-3 flex items-center justify-between`}>
-        <div className="flex items-center">
-          <img src={logo} width={24} height={24} className="mr-2"/>
-          <h1 className="text-lg font-bold text-white">Возьми меня</h1>
-        </div>
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="text-white hover:bg-indigo-700 p-2 rounded-md"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-      </div>
 
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div
-          className="lg:hidden fixed inset-0 z-40 bg-black bg-opacity-50"
-          onClick={closeMobileMenu}
-        />
-      )}
 
       {/* Sidebar */}
       <div className={`
         ${isCompactMode ? 'fixed z-50' : 'relative z-auto'}
         flex flex-col ${isCompactMode ? 'w-16' : 'w-64'} bg-white shadow-lg h-full
         transform transition-transform duration-300 ease-in-out
-        ${isCompactMode ? (isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full') : 'translate-x-0'}
+        translate-x-0
       `}>
         {/* Desktop Header */}
         <div className={`${!isCompactMode ? 'flex' : 'hidden'} items-center justify-center h-16 px-4 bg-indigo-600`}>
@@ -90,16 +68,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
 
         {/* Mobile Header in Sidebar */}
-        <div className={`${isCompactMode ? 'flex' : 'hidden'} items-center justify-center h-14 bg-indigo-600 relative`}>
+        <div className={`${isCompactMode ? 'flex' : 'hidden'} items-center justify-center h-14 bg-indigo-600`}>
           <img src={logo} width={24} height={24}/>
-          <button
-            onClick={closeMobileMenu}
-            className="absolute top-2 right-2 text-white hover:bg-indigo-700 p-1 rounded-md"
-          >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
         </div>
 
         <nav className={`flex-1 ${isCompactMode ? 'px-1' : 'px-4'} py-3 space-y-2`}>
@@ -107,7 +77,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Link
               key={item.path}
               to={item.path}
-              onClick={closeMobileMenu}
               className={`flex ${isCompactMode ? 'justify-center px-2' : 'items-center px-4'} py-3 text-sm font-medium rounded-md transition-colors ${
                 isActive(item.path)
                   ? 'bg-indigo-100 text-indigo-700'
@@ -125,7 +94,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <button
             onClick={() => {
               logout();
-              closeMobileMenu();
             }}
             className={`flex ${isCompactMode ? 'justify-center px-2' : 'items-center px-4'} w-full py-3 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-100 hover:text-gray-900`}
             title="Выйти"
@@ -138,7 +106,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <main className={`flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 ${isCompactMode ? 'pt-16' : 'pt-0'} pb-safe`}>
+        <main className={`flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 ${isCompactMode ? 'ml-16' : 'ml-0'} pb-safe`}>
           <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 pb-6 sm:pb-8">
             {children}
           </div>

@@ -129,18 +129,18 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({
               />
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:justify-end space-y-4 sm:space-y-0 sm:space-x-4 pt-8">
+            <div className="flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4 mt-4">
               <button
                 type="button"
                 onClick={onClose}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-4 rounded-md w-full sm:w-auto order-2 sm:order-1 font-medium min-h-[44px] touch-manipulation"
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md w-full sm:w-auto order-2 sm:order-1 font-medium min-h-[44px] touch-manipulation"
                 disabled={isLoading}
               >
                 Отмена
               </button>
               <button
                 type="submit"
-                className="bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-md disabled:opacity-50 w-full sm:w-auto order-1 sm:order-2 font-medium min-h-[44px] touch-manipulation"
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md disabled:opacity-50 w-full sm:w-auto order-1 sm:order-2 font-medium min-h-[44px] touch-manipulation"
                 disabled={isLoading}
               >
                 {isLoading ? 'Сохранение...' : expense ? 'Обновить' : 'Добавить расход'}

@@ -37,8 +37,14 @@ cd backend
 
 # Запуск backend в фоне
 echo "⚙️  Запуск backend сервера..."
-nohup npm start > /dev/null 2>&1 &
-BACKEND_PID=$!
+nohup npm start > backend.log 2>&1 &
+NPM_PID=$!
+
+# Ждём немного, чтобы npm запустил node процесс
+sleep 3
+
+# Находим PID node процесса
+BACKEND_PID=$(lsof -ti :3001 2>/dev/null || echo "")
 
 # Ожидание запуска backend
 echo "⏳ Ожидание запуска backend..."
@@ -52,6 +58,19 @@ for i in {1..30}; do
         echo "❌ Backend не запустился за 30 секунд"
         echo "🔍 Проверяем процессы на порту 3001:"
         lsof -i :3001 || echo "Порт 3001 не используется"
+        echo "🔍 Проверяем логи backend:"
+        if [ -f backend.log ]; then
+            echo "--- Последние 10 строк backend.log ---"
+            tail -10 backend.log
+        else
+            echo "Лог файл backend.log не найден"
+        fi
+        echo "🔍 Проверяем npm процесс:"
+        if kill -0 $NPM_PID 2>/dev/null; then
+            echo "NPM процесс (PID: $NPM_PID) ещё работает"
+        else
+            echo "NPM процесс (PID: $NPM_PID) завершился"
+        fi
         echo "🔍 Пробуем подключиться к health check:"
         curl -v http://localhost:3001/api/health || echo "Health check недоступен"
         exit 1
@@ -114,5 +133,9 @@ echo ""
 echo "📝 Для остановки используйте: ./stop-vm.sh"
 
 # Сохранение PID backend процесса
-echo $BACKEND_PID > backend.pid
-echo "💾 Backend PID сохранен: $BACKEND_PID"
+if [ -n "$BACKEND_PID" ]; then
+    echo $BACKEND_PID > ../backend.pid
+    echo "💾 Backend PID сохранен: $BACKEND_PID"
+else
+    echo "⚠️  Не удалось определить PID backend процесса"
+fi

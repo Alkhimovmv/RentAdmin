@@ -74,4 +74,34 @@ export class EquipmentController {
       res.status(500).json({ error: 'Ошибка удаления оборудования' });
     }
   }
+
+  // Получить оборудование с виртуальными экземплярами для аренды
+  async getForRental(_req: Request, res: Response): Promise<void> {
+    try {
+      const equipment: Equipment[] = await db('equipment').select('*').orderBy('name');
+
+      const equipmentInstances: Equipment[] = [];
+
+      equipment.forEach(item => {
+        if (item.quantity === 1) {
+          // Если количество 1, добавляем как есть
+          equipmentInstances.push(item);
+        } else {
+          // Если количество больше 1, создаем виртуальные экземпляры
+          for (let i = 1; i <= item.quantity; i++) {
+            equipmentInstances.push({
+              ...item,
+              id: item.id * 1000 + i, // Виртуальный ID для экземпляра
+              name: `${item.name} №${i}`,
+              quantity: 1
+            });
+          }
+        }
+      });
+
+      res.json(equipmentInstances);
+    } catch (error) {
+      res.status(500).json({ error: 'Ошибка получения оборудования для аренды' });
+    }
+  }
 }

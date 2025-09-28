@@ -51,7 +51,9 @@
       "Bash(./quick-start.sh:*)",
       "Bash(ip route:*)",
       "Bash(./local-start.sh:*)",
-      "Bash(command -v:*)"
+      "Bash(command -v:*)",
+      "Bash(sqlite3:*)",
+      "Bash(/home/maxim/Android/Sdk/platform-tools/sqlite3 dev.sqlite3 \".schema rentals\")"
     ],
     "deny": [],
     "ask": []

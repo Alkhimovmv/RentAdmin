@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Install dependencies for building
 COPY package*.json ./
-RUN npm ci --only=development && npm cache clean --force
+RUN npm ci && npm cache clean --force
 
 # Copy source code and build
 COPY . .
@@ -13,8 +13,8 @@ RUN npm run build
 
 FROM node:18-alpine AS production
 
-# Install security updates
-RUN apk update && apk upgrade && apk add --no-cache dumb-init
+# Install security updates and dumb-init
+RUN apk update && apk upgrade && apk add --no-cache dumb-init sqlite
 
 WORKDIR /app
 
@@ -29,8 +29,9 @@ RUN npm ci --only=production && npm cache clean --force
 # Copy built application and necessary files
 COPY --from=builder --chown=backend:nodejs /app/dist ./dist
 COPY --from=builder --chown=backend:nodejs /app/knexfile.js ./
-COPY --from=builder --chown=backend:nodejs /app/src/migrations ./src/migrations
-COPY --from=builder --chown=backend:nodejs /app/src/seeds ./src/seeds
+
+# Create directory for SQLite database and set permissions
+RUN mkdir -p /app/data && chown -R backend:nodejs /app
 
 # Switch to non-root user
 USER backend
@@ -43,4 +44,4 @@ EXPOSE 3001
 
 # Use dumb-init for proper signal handling
 ENTRYPOINT ["dumb-init", "--"]
-CMD ["npm", "start"]
+CMD ["node", "dist/server.js"]

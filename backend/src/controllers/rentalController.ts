@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import db from '@/utils/database';
 import { Rental, CreateRentalDto, UpdateRentalDto, RentalWithEquipment, RentalStatus } from '@/models/types';
+import { createRecord, updateRecord } from '@/utils/dbHelpers';
 
 export class RentalController {
   async getAll(req: Request, res: Response): Promise<void> {
@@ -51,9 +52,10 @@ export class RentalController {
   async create(req: Request, res: Response): Promise<void> {
     try {
       const rentalData: CreateRentalDto = req.body;
-      const [rental]: Rental[] = await db('rentals').insert(rentalData).returning('*');
+      const rental = await createRecord<Rental>('rentals', rentalData);
       res.status(201).json(rental);
     } catch (error) {
+      console.error('Rental create error:', error);
       res.status(500).json({ error: 'Ошибка создания аренды' });
     }
   }
@@ -63,10 +65,7 @@ export class RentalController {
       const { id } = req.params;
       const updateData: UpdateRentalDto = req.body;
 
-      const [rental]: Rental[] = await db('rentals')
-        .where('id', id)
-        .update(updateData)
-        .returning('*');
+      const rental = await updateRecord<Rental>('rentals', id, updateData);
 
       if (!rental) {
         res.status(404).json({ error: 'Аренда не найдена' });
@@ -75,6 +74,7 @@ export class RentalController {
 
       res.json(rental);
     } catch (error) {
+      console.error('Rental update error:', error);
       res.status(500).json({ error: 'Ошибка обновления аренды' });
     }
   }

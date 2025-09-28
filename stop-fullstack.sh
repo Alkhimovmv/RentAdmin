@@ -1,48 +1,33 @@
 #!/bin/bash
 
-echo "🛑 Остановка всех сервисов RentAdmin"
-echo "===================================="
+echo "🛑 Остановка RentAdmin"
+echo "===================="
 
-# Остановка процессов на стандартных портах
-echo "🔍 Поиск и остановка процессов..."
+# Ищем и останавливаем процессы Node.js связанные с проектом
+echo "Поиск запущенных процессов..."
 
-# Находим процессы на портах 3001 и 5173
-BACKEND_PID=$(lsof -t -i:3001 2>/dev/null)
-FRONTEND_PID=$(lsof -t -i:5173 2>/dev/null)
-
-if [ ! -z "$BACKEND_PID" ]; then
-    echo "🟢 Остановка Backend (PID: $BACKEND_PID)..."
-    kill -TERM $BACKEND_PID 2>/dev/null
-    sleep 2
-
-    # Принудительно убиваем если еще работает
-    if kill -0 $BACKEND_PID 2>/dev/null; then
-        echo "🔨 Принудительная остановка Backend..."
-        kill -KILL $BACKEND_PID 2>/dev/null
-    fi
-    echo "✅ Backend остановлен"
-else
-    echo "ℹ️ Backend не запущен"
+# Останавливаем backend процессы
+BACKEND_PIDS=$(pgrep -f "node.*server.js\|npm.*start" 2>/dev/null || true)
+if [ ! -z "$BACKEND_PIDS" ]; then
+    echo "Остановка backend процессов: $BACKEND_PIDS"
+    kill $BACKEND_PIDS 2>/dev/null || true
 fi
 
-if [ ! -z "$FRONTEND_PID" ]; then
-    echo "🟦 Остановка Frontend (PID: $FRONTEND_PID)..."
-    kill -TERM $FRONTEND_PID 2>/dev/null
-    sleep 2
-
-    # Принудительно убиваем если еще работает
-    if kill -0 $FRONTEND_PID 2>/dev/null; then
-        echo "🔨 Принудительная остановка Frontend..."
-        kill -KILL $FRONTEND_PID 2>/dev/null
-    fi
-    echo "✅ Frontend остановлен"
-else
-    echo "ℹ️ Frontend не запущен"
+# Останавливаем frontend процессы
+FRONTEND_PIDS=$(pgrep -f "vite\|npm.*dev" 2>/dev/null || true)
+if [ ! -z "$FRONTEND_PIDS" ]; then
+    echo "Остановка frontend процессов: $FRONTEND_PIDS"
+    kill $FRONTEND_PIDS 2>/dev/null || true
 fi
 
-# Очищаем PID файлы если есть
-rm -f backend.pid frontend.pid 2>/dev/null
+# Ждем завершения процессов
+sleep 2
 
-echo ""
-echo "✅ Все сервисы остановлены!"
-echo "📍 Порты 3001 и 5173 освобождены"
+# Форсированная остановка если процессы не завершились
+REMAINING=$(pgrep -f "node.*server.js\|npm.*start\|vite\|npm.*dev" 2>/dev/null || true)
+if [ ! -z "$REMAINING" ]; then
+    echo "Принудительная остановка оставшихся процессов: $REMAINING"
+    kill -9 $REMAINING 2>/dev/null || true
+fi
+
+echo "✅ Все процессы остановлены"

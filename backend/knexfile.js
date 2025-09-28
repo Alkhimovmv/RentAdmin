@@ -3,11 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require('dotenv').config();
 const config = {
     development: {
-        client: 'sqlite3',
+        client: 'pg',
         connection: {
-            filename: './dev.sqlite3'
+            host: process.env.DB_HOST || 'localhost',
+            port: parseInt(process.env.DB_PORT || '5432'),
+            database: process.env.DB_NAME || 'rent_admin',
+            user: process.env.DB_USER || 'postgres',
+            password: process.env.DB_PASSWORD || 'password',
         },
-        useNullAsDefault: true,
         migrations: {
             directory: './src/migrations',
         },

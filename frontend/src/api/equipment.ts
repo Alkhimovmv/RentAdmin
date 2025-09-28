@@ -25,4 +25,10 @@ export const equipmentApi = {
   delete: async (id: number): Promise<void> => {
     await apiClient.delete(`/equipment/${id}`);
   },
+
+  // Получить оборудование с виртуальными экземплярами для аренды
+  getForRental: async (): Promise<Equipment[]> => {
+    const response = await apiClient.get('/equipment/for-rental');
+    return response.data;
+  },
 };

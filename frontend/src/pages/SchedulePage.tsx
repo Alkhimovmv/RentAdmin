@@ -79,7 +79,6 @@ const SchedulePage: React.FC = () => {
       checkTime.setHours(hour, 0, 0, 0);
 
       return rental.equipment_id === equipmentId &&
-             rental.equipment_instance === instanceNumber &&
              startDate <= checkTime &&
              endDate > checkTime;
     });

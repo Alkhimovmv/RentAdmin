@@ -15,13 +15,12 @@ export interface CreateEquipmentDto {
   base_price: number;
 }
 
-export type RentalSource = 'avito' | 'website' | 'referral' | 'maps';
+export type RentalSource = 'авито' | 'сайт' | 'рекомендация' | 'карты';
 export type RentalStatus = 'pending' | 'active' | 'completed' | 'overdue';
 
 export interface Rental {
   id: number;
   equipment_id: number;
-  equipment_instance?: number;
   start_date: string;
   end_date: string;
   customer_name: string;
@@ -41,7 +40,6 @@ export interface Rental {
 
 export interface CreateRentalDto {
   equipment_id: number;
-  equipment_instance?: number;
   start_date: string;
   end_date: string;
   customer_name: string;

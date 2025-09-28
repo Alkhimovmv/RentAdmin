@@ -1,222 +1,224 @@
-# 🚀 Руководство по развертыванию RentAdmin
+# 🚀 Развертывание RentAdmin на cloud.ru
 
-## 📋 Обзор
-Этот документ содержит пошаговые инструкции по развертыванию приложения RentAdmin:
-- **Backend**: Yandex Cloud (Compute Cloud + Managed PostgreSQL)
-- **Frontend**: Netlify
+## Быстрый старт
 
-## 🔧 Предварительная подготовка
-
-### Требования:
-- Аккаунт в Yandex Cloud
-- Аккаунт в Netlify
-- Docker (для локального тестирования)
-- Git
-- Node.js 18+
-
-## 🗄️ Настройка базы данных (Yandex Cloud)
-
-### 1. Создание Managed PostgreSQL
+### 1. Подключение к серверу
 ```bash
-# Через Yandex Cloud Console или CLI
-yc managed-postgresql cluster create \
-  --name rent-admin-db \
-  --environment production \
-  --network-name default \
-  --host zone-id=ru-central1-a,subnet-id=<your-subnet-id> \
-  --postgresql-version 15 \
-  --user name=admin,password=<secure-password> \
-  --database name=rent_admin_prod,owner=admin \
-  --disk-size 20GB \
-  --disk-type network-ssd \
-  --resource-preset s2.micro
+ssh root@87.242.103.146
 ```
 
-### 2. Настройка доступа
-- Получите хост базы данных из консоли Yandex Cloud
-- Настройте SSL-соединение
-- Обновите файл `.env.production`
-
-## 🖥️ Развертывание Backend (Yandex Cloud)
-
-### 1. Создание Compute Cloud инстанса
+### 2. Скачивание проекта
 ```bash
-yc compute instance create \
-  --name rent-admin-backend \
-  --zone ru-central1-a \
-  --network-interface subnet-name=default,nat-ip-version=ipv4 \
-  --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-2004-lts,size=20GB \
-  --ssh-key ~/.ssh/id_rsa.pub \
-  --memory 2GB \
-  --cores 1
+# Создание директории проекта
+mkdir -p /opt/rentadmin
+cd /opt/rentadmin
+
+# Скачивание файлов проекта (один из способов):
+
+# Вариант А: Через wget/curl (если есть архив)
+wget <URL_TO_PROJECT_ARCHIVE>
+unzip <archive_name>
+
+# Вариант Б: Через git (если настроен репозиторий)
+git clone <repository_url> .
+
+# Вариант В: Через scp с локальной машины
+# scp -r /path/to/RentAdmin root@87.242.103.146:/opt/rentadmin/
 ```
 
-### 2. Настройка сервера
+### 3. Запуск автоматического развертывания
 ```bash
-# Подключение к серверу
-ssh yc-user@<your-server-ip>
-
-# Установка Docker
-sudo apt update
-sudo apt install -y docker.io docker-compose
-sudo usermod -aG docker $USER
-
-# Установка Node.js
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt-get install -y nodejs
+cd /opt/rentadmin
+chmod +x deploy-to-server.sh
+./deploy-to-server.sh
 ```
 
-### 3. Развертывание приложения
+Скрипт автоматически:
+- ✅ Установит Docker и Docker Compose
+- ✅ Настроит файрвол
+- ✅ Соберет frontend
+- ✅ Запустит все сервисы
+- ✅ Настроит nginx
+
+### 4. Проверка работы
+После завершения установки приложение будет доступно:
+- **Frontend**: http://87.242.103.146
+- **API**: http://87.242.103.146/api
+- **Health check**: http://87.242.103.146/health
+
+## 🔧 Управление приложением
+
+### Основные команды
 ```bash
-# Клонирование репозитория
-git clone <your-repo-url>
-cd RentAdmin
+cd /opt/rentadmin
 
-# Настройка переменных окружения
-cp backend/.env.production backend/.env
-# Отредактируйте .env файл с реальными данными
+# Просмотр статуса
+docker-compose ps
 
-# Сборка и запуск
-docker-compose -f docker-compose.prod.yml up -d
+# Просмотр логов
+docker-compose logs -f
 
-# Запуск миграций
-docker-compose -f docker-compose.prod.yml exec backend npm run db:migrate
+# Перезапуск
+docker-compose restart
+
+# Остановка
+docker-compose down
+
+# Полная остановка с удалением данных
+docker-compose down -v
 ```
 
-### 4. Настройка файерволла
+### Обновление приложения
 ```bash
-# Открытие портов
-sudo ufw allow 22/tcp
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-sudo ufw allow 3001/tcp
-sudo ufw enable
+cd /opt/rentadmin
+./update-production.sh
 ```
 
-## 🌐 Развертывание Frontend (Netlify)
-
-### 1. Подготовка проекта
+### Мониторинг ресурсов
 ```bash
-# Обновите .env.production с реальным URL API
-cd frontend
-nano .env.production
+# Использование ресурсов контейнерами
+docker stats
+
+# Дисковое пространство
+df -h
+
+# Логи системы
+sudo journalctl -u docker -f
 ```
 
-### 2. Развертывание через Git
-1. Подключите репозиторий к Netlify
-2. Настройте build команды:
-   - **Build command**: `npm run build`
-   - **Publish directory**: `dist`
-   - **Node version**: `18`
+## 🔐 Настройки безопасности
 
-### 3. Настройка переменных окружения в Netlify
-В настройках сайта добавьте:
-```
-VITE_API_URL=https://your-backend-domain.yandexcloud.net/api
+### Изменение секретных ключей
+Отредактируйте файл `docker-compose.yml`:
+```yaml
+environment:
+  - JWT_SECRET=your-new-secret-here
+  - PIN_CODE=your-new-pin-here
 ```
 
-### 4. Настройка кастомного домена (опционально)
-1. Добавьте домен в настройках Netlify
-2. Настройте DNS записи
-3. Включите HTTPS
-
-## 🔐 Безопасность и мониторинг
-
-### SSL/TLS сертификаты
+Затем перезапустите:
 ```bash
-# Установка Certbot для Let's Encrypt
-sudo apt install certbot python3-certbot-nginx
-sudo certbot --nginx -d your-domain.com
+docker-compose down
+docker-compose up -d
 ```
 
-### Мониторинг
-```bash
-# Логи приложения
-docker-compose -f docker-compose.prod.yml logs -f backend
+### Настройка HTTPS (опционально)
+1. Получите SSL сертификат (Let's Encrypt)
+2. Обновите `nginx.conf` для HTTPS
+3. Перезапустите nginx контейнер
 
-# Состояние сервисов
-docker-compose -f docker-compose.prod.yml ps
+## 📊 Структура проекта
 
-# Health check
-curl https://your-backend-domain.yandexcloud.net/api/health
 ```
-
-## 🔄 Обновление приложения
-
-### Backend
-```bash
-git pull origin main
-docker-compose -f docker-compose.prod.yml build
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-### Frontend
-- Просто пушьте изменения в main ветку
-- Netlify автоматически пересоберет и задеплоит
-
-## 📊 Настройка бэкапов
-
-### Автоматический бэкап PostgreSQL
-```bash
-# Создайте скрипт backup.sh
-#!/bin/bash
-BACKUP_DIR="/home/yc-user/backups"
-DATE=$(date +%Y%m%d_%H%M%S)
-pg_dump -h <db-host> -U admin -d rent_admin_prod > $BACKUP_DIR/backup_$DATE.sql
-
-# Добавьте в crontab
-crontab -e
-# 0 2 * * * /path/to/backup.sh
+/opt/rentadmin/
+├── docker-compose.yml      # Конфигурация Docker
+├── nginx.conf             # Конфигурация nginx
+├── .env.production        # Переменные окружения
+├── deploy-to-server.sh    # Скрипт развертывания
+├── update-production.sh   # Скрипт обновления
+├── backend/              # Backend приложение
+│   ├── Dockerfile
+│   └── ...
+├── frontend/             # Frontend приложение
+│   ├── dist/            # Собранные файлы
+│   └── ...
+└── data/                # База данных SQLite
+    └── production.sqlite3
 ```
 
 ## 🐛 Устранение неполадок
 
-### Проверка логов
+### Проблема: Контейнер не запускается
 ```bash
-# Backend логи
-docker-compose -f docker-compose.prod.yml logs backend
+# Проверка логов
+docker-compose logs backend
+docker-compose logs nginx
 
-# Системные логи
-sudo journalctl -u docker
+# Проверка портов
+netstat -tulpn | grep :80
+netstat -tulpn | grep :3001
 ```
 
-### Проверка подключения к БД
+### Проблема: База данных недоступна
 ```bash
-# Тест подключения
-docker-compose -f docker-compose.prod.yml exec backend npm run db:migrate
+# Проверка файла БД
+ls -la data/production.sqlite3
+
+# Проверка прав доступа
+sudo chown -R 1001:1001 data/
 ```
 
-### Проверка API
+### Проблема: Frontend не загружается
 ```bash
-# Health check
-curl -X GET https://your-api-url.com/api/health
+# Пересборка frontend
+cd frontend
+npm run build
+docker-compose restart nginx
+```
 
-# Проверка CORS
-curl -H "Origin: https://your-frontend-url.com" \
-     -H "Access-Control-Request-Method: GET" \
-     -X OPTIONS https://your-api-url.com/api/health
+### Проблема: CORS ошибки
+Проверьте настройки в `nginx.conf` и `docker-compose.yml`:
+- CORS_ORIGIN должен соответствовать IP сервера
+- Nginx должен правильно проксировать API запросы
+
+## 📝 Логи и мониторинг
+
+### Просмотр логов
+```bash
+# Все сервисы
+docker-compose logs -f
+
+# Конкретный сервис
+docker-compose logs -f backend
+docker-compose logs -f nginx
+
+# Последние N строк
+docker-compose logs --tail=50 backend
+```
+
+### Мониторинг производительности
+```bash
+# Статистика контейнеров
+docker stats
+
+# Использование диска
+du -sh data/
+df -h
+```
+
+## 🔄 Резервное копирование
+
+### Создание бэкапа
+```bash
+# Остановка приложения
+docker-compose down
+
+# Создание бэкапа БД
+cp data/production.sqlite3 backups/backup-$(date +%Y%m%d-%H%M%S).sqlite3
+
+# Запуск приложения
+docker-compose up -d
+```
+
+### Восстановление из бэкапа
+```bash
+docker-compose down
+cp backups/backup-YYYYMMDD-HHMMSS.sqlite3 data/production.sqlite3
+docker-compose up -d
 ```
 
 ## 📞 Поддержка
 
 При возникновении проблем:
-1. Проверьте логи приложения
-2. Убедитесь в правильности переменных окружения
-3. Проверьте сетевые настройки и файерволл
-4. Проверьте SSL сертификаты
+1. Проверьте логи: `docker-compose logs -f`
+2. Проверьте статус: `docker-compose ps`
+3. Проверьте конфигурацию nginx: `nginx -t`
+4. Перезапустите сервисы: `docker-compose restart`
 
-## 🎯 Оптимизация производительности
+## 🌐 Доступ к приложению
 
-### Backend
-- Используйте connection pooling для БД
-- Настройте кэширование Redis (опционально)
-- Мониторинг ресурсов сервера
+После успешного развертывания:
+- **URL**: http://87.242.103.146
+- **PIN-код для входа**: 20031997
 
-### Frontend
-- Включите gzip сжатие в Netlify
-- Используйте CDN для статических ресурсов
-- Мониторинг производительности через Lighthouse
-
----
-
-✅ **Готово!** Ваше приложение RentAdmin теперь работает в продакшене.
+**Важно**: Измените PIN-код в production!

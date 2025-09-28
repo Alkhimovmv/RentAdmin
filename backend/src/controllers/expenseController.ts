@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import db from '@/utils/database';
 import { Expense, CreateExpenseDto, UpdateExpenseDto } from '@/models/types';
+import { createRecord, updateRecord } from '@/utils/dbHelpers';
 
 export class ExpenseController {
   async getAll(req: Request, res: Response): Promise<void> {
@@ -31,9 +32,10 @@ export class ExpenseController {
   async create(req: Request, res: Response): Promise<void> {
     try {
       const expenseData: CreateExpenseDto = req.body;
-      const [expense]: Expense[] = await db('expenses').insert(expenseData).returning('*');
+      const expense = await createRecord<Expense>('expenses', expenseData);
       res.status(201).json(expense);
     } catch (error) {
+      console.error('Expense create error:', error);
       res.status(500).json({ error: 'Ошибка создания расхода' });
     }
   }
@@ -43,10 +45,7 @@ export class ExpenseController {
       const { id } = req.params;
       const updateData: UpdateExpenseDto = req.body;
 
-      const [expense]: Expense[] = await db('expenses')
-        .where('id', id)
-        .update(updateData)
-        .returning('*');
+      const expense = await updateRecord<Expense>('expenses', id, updateData);
 
       if (!expense) {
         res.status(404).json({ error: 'Расход не найден' });
@@ -55,6 +54,7 @@ export class ExpenseController {
 
       res.json(expense);
     } catch (error) {
+      console.error('Expense update error:', error);
       res.status(500).json({ error: 'Ошибка обновления расхода' });
     }
   }

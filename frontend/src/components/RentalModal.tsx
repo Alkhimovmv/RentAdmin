@@ -21,7 +21,6 @@ const RentalModal: React.FC<RentalModalProps> = ({
 }) => {
   const [formData, setFormData] = useState<CreateRentalDto>({
     equipment_id: 0,
-    equipment_instance: undefined,
     start_date: '',
     end_date: '',
     customer_name: '',
@@ -31,7 +30,7 @@ const RentalModal: React.FC<RentalModalProps> = ({
     rental_price: 0,
     delivery_price: 0,
     delivery_costs: 0,
-    source: 'avito',
+    source: 'авито',
     comment: '',
   });
 
@@ -48,7 +47,6 @@ const RentalModal: React.FC<RentalModalProps> = ({
     if (rental) {
       setFormData({
         equipment_id: rental.equipment_id,
-        equipment_instance: rental.equipment_instance,
         start_date: rental.start_date.slice(0, 16),
         end_date: rental.end_date.slice(0, 16),
         customer_name: rental.customer_name,
@@ -64,7 +62,6 @@ const RentalModal: React.FC<RentalModalProps> = ({
     } else {
       setFormData({
         equipment_id: 0,
-        equipment_instance: undefined,
         start_date: '',
         end_date: '',
         customer_name: '',
@@ -74,7 +71,7 @@ const RentalModal: React.FC<RentalModalProps> = ({
         rental_price: 0,
         delivery_price: 0,
         delivery_costs: 0,
-        source: 'avito',
+        source: 'авито',
         comment: '',
       });
     }
@@ -124,7 +121,7 @@ const RentalModal: React.FC<RentalModalProps> = ({
     const dateError = validateDates(formData.start_date, formData.end_date);
 
     // Проверяем все обязательные поля
-    const isEquipmentSelected = formData.equipment_id > 0 && formData.equipment_instance;
+    const isEquipmentSelected = formData.equipment_id > 0;
     const hasStartDate = formData.start_date.trim() !== '';
     const hasEndDate = formData.end_date.trim() !== '';
     const hasCustomerName = formData.customer_name.trim() !== '';
@@ -137,7 +134,7 @@ const RentalModal: React.FC<RentalModalProps> = ({
     const errors: typeof validationErrors = {};
 
     // Валидация оборудования
-    if (!formData.equipment_id || !formData.equipment_instance) {
+    if (!formData.equipment_id) {
       errors.equipment = 'Необходимо выбрать оборудование';
     }
 
@@ -181,10 +178,10 @@ const RentalModal: React.FC<RentalModalProps> = ({
   };
 
   const sources: { value: RentalSource; label: string }[] = [
-    { value: 'avito', label: 'Авито' },
-    { value: 'website', label: 'Сайт' },
-    { value: 'referral', label: 'Рекомендация' },
-    { value: 'maps', label: 'Карты' }
+    { value: 'авито', label: 'Авито' },
+    { value: 'сайт', label: 'Сайт' },
+    { value: 'рекомендация', label: 'Рекомендация' },
+    { value: 'карты', label: 'Карты' }
   ];
 
   if (!isOpen) return null;
@@ -204,35 +201,20 @@ const RentalModal: React.FC<RentalModalProps> = ({
                   Оборудование
                 </label>
                 <CustomSelect
-                  value={formData.equipment_id && formData.equipment_instance ? `${formData.equipment_id}-${formData.equipment_instance}` : ''}
+                  value={formData.equipment_id ? formData.equipment_id.toString() : ''}
                   onChange={(selectedValue) => {
-                    if (selectedValue.includes('-')) {
-                      const [equipmentId, instanceNumber] = selectedValue.split('-').map(Number);
-                      setFormData({
-                        ...formData,
-                        equipment_id: equipmentId,
-                        equipment_instance: instanceNumber
-                      });
-                      // Очищаем ошибку при выборе
-                      setValidationErrors(prev => ({ ...prev, equipment: null }));
-                    } else {
-                      setFormData({
-                        ...formData,
-                        equipment_id: 0,
-                        equipment_instance: undefined
-                      });
-                    }
+                    const equipmentId = Number(selectedValue);
+                    setFormData({
+                      ...formData,
+                      equipment_id: equipmentId
+                    });
+                    // Очищаем ошибку при выборе
+                    setValidationErrors(prev => ({ ...prev, equipment: null }));
                   }}
-                  options={equipment.map((item) => {
-                    const instances = [];
-                    for (let i = 1; i <= item.quantity; i++) {
-                      instances.push({
-                        value: `${item.id}-${i}`,
-                        label: `${item.name} #${i}`
-                      });
-                    }
-                    return instances;
-                  }).flat()}
+                  options={equipment.map((item) => ({
+                    value: item.id.toString(),
+                    label: item.name
+                  }))}
                   placeholder="Выберите оборудование"
                   required
                 />
@@ -390,7 +372,7 @@ const RentalModal: React.FC<RentalModalProps> = ({
               </div>
             </div>
 
-            {formData.needs_delivery && (
+            {!!formData.needs_delivery && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">

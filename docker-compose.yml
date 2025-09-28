@@ -1,62 +1,52 @@
 version: '3.8'
 
 services:
-  # PostgreSQL database
-  database:
-    image: postgres:15-alpine
-    container_name: rent-admin-db
-    environment:
-      POSTGRES_DB: rent_admin
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+  nginx:
+    image: nginx:alpine
+    container_name: rentadmin_nginx
     ports:
-      - "5432:5432"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./frontend/dist:/usr/share/nginx/html
+    depends_on:
+      - backend
+    restart: unless-stopped
     networks:
-      - rent-admin-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d rent_admin"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-      start_period: 10s
+      - rentadmin_network
 
-  # Backend API
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: rent-admin-backend
+    container_name: rentadmin_backend
     environment:
-      NODE_ENV: production
-      PORT: 3001
-      DB_HOST: database
-      DB_PORT: 5432
-      DB_NAME: rent_admin
-      DB_USER: postgres
-      DB_PASSWORD: password
-      JWT_SECRET: super-secret-jwt-key-for-rent-admin-2024
-      PIN_CODE: 20031997
-      CORS_ORIGIN: https://vozmimenjaadmin.netlify.app
+      - NODE_ENV=production
+      - PORT=3001
+      - JWT_SECRET=super-secret-jwt-key-for-rent-admin-production-2024
+      - PIN_CODE=20031997
+      - CORS_ORIGIN=http://87.242.103.146
+      - DB_TYPE=sqlite
+      - DB_PATH=/app/data/production.sqlite3
+    volumes:
+      - sqlite_data:/app/data
+      - ./backend/dev.sqlite3:/app/data/production.sqlite3
     ports:
       - "3001:3001"
-    depends_on:
-      database:
-        condition: service_healthy
-    networks:
-      - rent-admin-network
-    volumes:
-      - ./backend/src/migrations:/app/src/migrations
-      - ./backend/src/seeds:/app/src/seeds
-    command: sh -c "sleep 15 && npm run db:migrate && npm start"
     restart: unless-stopped
-
+    networks:
+      - rentadmin_network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 volumes:
-  postgres_data:
-    driver: local
+  sqlite_data:
 
 networks:
-  rent-admin-network:
+  rentadmin_network:
     driver: bridge

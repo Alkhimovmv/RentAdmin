@@ -19,7 +19,7 @@ const RentalsPage: React.FC = () => {
 
   const { data: rentals = [], isLoading } = useAuthenticatedQuery<Rental[]>(['rentals'], rentalsApi.getAll);
 
-  const { data: equipment = [] } = useAuthenticatedQuery<Equipment[]>(['equipment'], equipmentApi.getAll);
+  const { data: equipment = [] } = useAuthenticatedQuery<Equipment[]>(['equipment-rental'], equipmentApi.getForRental);
 
   // Фильтрация аренд по дате
   const filteredRentals = useMemo(() => {
@@ -171,11 +171,6 @@ const RentalsPage: React.FC = () => {
                     </span>
                     <h3 className="text-lg font-medium text-gray-900 truncate">
                       {rental.equipment_name}
-                      {rental.equipment_instance && (
-                        <span className="ml-2 text-sm font-normal text-indigo-600">
-                          №{rental.equipment_instance}
-                        </span>
-                      )}
                     </h3>
                   </div>
                   <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
@@ -183,7 +178,7 @@ const RentalsPage: React.FC = () => {
                     <span>📞 {rental.customer_phone}</span>
                     <span>🕐 {formatDate(rental.start_date)} - {formatDate(rental.end_date)}</span>
                     <span>💰 {rental.rental_price}₽</span>
-                    {rental.needs_delivery && (
+                    {!!rental.needs_delivery && (
                       <span className="text-blue-600">🚚 Доставка: {rental.delivery_price}₽</span>
                     )}
                   </div>

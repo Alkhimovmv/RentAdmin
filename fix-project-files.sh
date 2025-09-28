@@ -152,6 +152,72 @@ EOF
 EOF
     fi
 
+    # Проверка наличия tsconfig.app.json
+    if [ ! -f "tsconfig.app.json" ]; then
+        log "Создание tsconfig.app.json..."
+        cat > tsconfig.app.json << 'EOF'
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["src"]
+}
+EOF
+    fi
+
+    # Проверка наличия tsconfig.node.json
+    if [ ! -f "tsconfig.node.json" ]; then
+        log "Создание tsconfig.node.json..."
+        cat > tsconfig.node.json << 'EOF'
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["vite.config.ts"]
+}
+EOF
+    fi
+
     # Очистка старых зависимостей
     if [ -d "node_modules" ]; then
         log "Очистка node_modules..."

@@ -167,7 +167,13 @@ build_frontend() {
 
     # Проверка наличия правильного package.json
     if ! grep -q '"build"' package.json 2>/dev/null; then
-        error "В package.json отсутствует скрипт build. Проверьте правильность копирования файлов."
+        error "В package.json отсутствует скрипт build. Запустите ./fix-project-files.sh для исправления."
+    fi
+
+    # Проверка наличия TypeScript конфигурационных файлов
+    if [ ! -f "tsconfig.app.json" ] || [ ! -f "tsconfig.node.json" ]; then
+        warn "Отсутствуют TypeScript конфигурационные файлы. Запустите ./fix-project-files.sh для исправления."
+        error "Невозможно продолжить без tsconfig.app.json и tsconfig.node.json"
     fi
 
     # Установка Node.js если не установлен

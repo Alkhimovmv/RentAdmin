@@ -17,6 +17,7 @@ const EquipmentPage: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['equipment'] });
       setIsModalOpen(false);
+      setEditingEquipment(null);
     },
   });
 

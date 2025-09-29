@@ -28,22 +28,26 @@ const EquipmentModal: React.FC<EquipmentModalProps> = ({
   }>({});
 
   useEffect(() => {
-    if (equipment) {
-      setFormData({
-        name: equipment.name,
-        quantity: equipment.quantity,
-        description: equipment.description || '',
-        base_price: equipment.base_price,
-      });
-    } else {
-      setFormData({
-        name: '',
-        quantity: 1,
-        description: '',
-        base_price: 0,
-      });
+    if (isOpen) {
+      if (equipment) {
+        setFormData({
+          name: equipment.name,
+          quantity: equipment.quantity,
+          description: equipment.description || '',
+          base_price: equipment.base_price,
+        });
+      } else {
+        setFormData({
+          name: '',
+          quantity: 1,
+          description: '',
+          base_price: 0,
+        });
+      }
+      // Очищаем ошибки валидации при открытии
+      setValidationErrors({});
     }
-  }, [equipment]);
+  }, [equipment, isOpen]);
 
   const isFormValid = () => {
     // Проверяем обязательное поле - название
@@ -76,8 +80,8 @@ const EquipmentModal: React.FC<EquipmentModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-11/12 max-w-md shadow-lg rounded-md bg-white">
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-start justify-center p-2 sm:p-4 pt-4 pb-safe sm:pt-8 sm:pb-8 overflow-y-auto z-50">
+      <div className="relative mx-auto p-4 sm:p-5 border w-11/12 max-w-md shadow-lg rounded-md bg-white max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-4rem)] overflow-y-auto" style={{marginTop: 'env(safe-area-inset-top)', marginBottom: 'env(safe-area-inset-bottom)'}}>
         <div className="mt-3">
           <h3 className="text-lg font-medium text-gray-900 mb-4">
             {equipment ? 'Редактировать оборудование' : 'Добавить новое оборудование'}
@@ -154,18 +158,18 @@ const EquipmentModal: React.FC<EquipmentModalProps> = ({
               />
             </div>
 
-            <div className="flex justify-end space-x-3 pt-4">
+            <div className="flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4 mt-4">
               <button
                 type="button"
                 onClick={onClose}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md"
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md w-full sm:w-auto order-2 sm:order-1 font-medium min-h-[44px] touch-manipulation"
                 disabled={isLoading}
               >
                 Отмена
               </button>
               <button
                 type="submit"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md disabled:opacity-50"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md disabled:opacity-50 w-full sm:w-auto order-1 sm:order-2 font-medium min-h-[44px] touch-manipulation"
                 disabled={isLoading || !isFormValid()}
               >
                 {isLoading ? 'Сохранение...' : equipment ? 'Обновить' : 'Создать'}

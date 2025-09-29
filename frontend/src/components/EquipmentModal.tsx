@@ -80,14 +80,15 @@ const EquipmentModal: React.FC<EquipmentModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-start justify-center p-2 sm:p-4 pt-4 pb-safe sm:pt-8 sm:pb-8 overflow-y-auto z-50">
-      <div className="relative mx-auto p-4 sm:p-5 border w-11/12 max-w-md shadow-lg rounded-md bg-white max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-4rem)] overflow-y-auto" style={{marginTop: 'env(safe-area-inset-top)', marginBottom: 'env(safe-area-inset-bottom)'}}>
-        <div className="mt-3">
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-start justify-center z-50 sm:p-4 sm:pt-8 sm:pb-8">
+      <div className="relative mx-auto border shadow-lg bg-white w-full h-full sm:w-11/12 sm:max-w-md sm:h-auto sm:max-h-[calc(100vh-4rem)] sm:rounded-md overflow-y-auto flex flex-col" style={{paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)'}}>
+        <div className="flex-1 flex flex-col p-4 sm:p-5">
           <h3 className="text-lg font-medium text-gray-900 mb-4">
             {equipment ? 'Редактировать оборудование' : 'Добавить новое оборудование'}
           </h3>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
+            <div className="flex-1 space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Название оборудования
@@ -157,8 +158,9 @@ const EquipmentModal: React.FC<EquipmentModalProps> = ({
                 placeholder="Краткое описание оборудования..."
               />
             </div>
+            </div>
 
-            <div className="flex flex-row justify-end space-x-3 pt-4 mt-4">
+            <div className="sticky bottom-0 bg-white border-t p-4 flex flex-row justify-end space-x-3">
               <button
                 type="button"
                 onClick={onClose}

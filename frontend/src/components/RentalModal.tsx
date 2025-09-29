@@ -187,14 +187,15 @@ const RentalModal: React.FC<RentalModalProps> = ({
   if (!isOpen) return null;
 
   const modalContent = (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center p-2 sm:p-4 pt-4 pb-safe sm:pt-8 sm:pb-8" style={{zIndex: 1000}}>
-      <div className="bg-white rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-2xl modal-container max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-4rem)] overflow-y-auto" style={{position: 'relative', zIndex: 1001, marginTop: 'env(safe-area-inset-top)', marginBottom: 'env(safe-area-inset-bottom)'}}>
-        <div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 sm:p-4 sm:pt-8 sm:pb-8" style={{zIndex: 1000}}>
+      <div className="bg-white shadow-xl w-full h-full sm:w-full sm:max-w-2xl sm:h-auto sm:max-h-[calc(100vh-4rem)] sm:rounded-lg modal-container overflow-y-auto flex flex-col" style={{position: 'relative', zIndex: 1001, paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)'}}>
+        <div className="flex-1 flex flex-col p-4 sm:p-6">
           <h3 className="text-lg font-medium text-gray-900 mb-4">
             {rental ? 'Редактировать аренду' : 'Добавить новую аренду'}
           </h3>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
+            <div className="flex-1 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -427,8 +428,9 @@ const RentalModal: React.FC<RentalModalProps> = ({
                 rows={3}
               />
             </div>
+            </div>
 
-            <div className="flex flex-row justify-end space-x-3 pt-4 mt-4">
+            <div className="sticky bottom-0 bg-white border-t p-4 flex flex-row justify-end space-x-3">
               <button
                 type="button"
                 onClick={onClose}

@@ -63,14 +63,15 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({
   if (!isOpen) return null;
 
   const modalContent = (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto" style={{zIndex: 1000}}>
-      <div className="bg-white rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-md max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
-        <div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 sm:p-4 sm:pt-8 sm:pb-8 overflow-y-auto" style={{zIndex: 1000}}>
+      <div className="bg-white shadow-xl w-full h-full sm:w-full sm:max-w-md sm:h-auto sm:max-h-[calc(100vh-4rem)] sm:rounded-lg overflow-y-auto flex flex-col" style={{paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)'}}>
+        <div className="flex-1 flex flex-col p-4 sm:p-6">
           <h3 className="text-lg font-medium text-gray-900 mb-4">
             {expense ? 'Редактировать расход' : 'Добавить новый расход'}
           </h3>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
+            <div className="flex-1 space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Описание расхода
@@ -128,8 +129,9 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({
                 placeholder="Выберите категорию"
               />
             </div>
+            </div>
 
-            <div className="flex flex-row justify-end space-x-3 pt-4 mt-4">
+            <div className="sticky bottom-0 bg-white border-t p-4 flex flex-row justify-end space-x-3">
               <button
                 type="button"
                 onClick={onClose}

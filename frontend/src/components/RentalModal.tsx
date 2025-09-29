@@ -44,38 +44,42 @@ const RentalModal: React.FC<RentalModalProps> = ({
   }>({});
 
   useEffect(() => {
-    if (rental) {
-      setFormData({
-        equipment_id: rental.equipment_id,
-        start_date: rental.start_date.slice(0, 16),
-        end_date: rental.end_date.slice(0, 16),
-        customer_name: rental.customer_name,
-        customer_phone: rental.customer_phone,
-        needs_delivery: rental.needs_delivery,
-        delivery_address: rental.delivery_address || '',
-        rental_price: rental.rental_price,
-        delivery_price: rental.delivery_price,
-        delivery_costs: rental.delivery_costs,
-        source: rental.source,
-        comment: rental.comment || '',
-      });
-    } else {
-      setFormData({
-        equipment_id: 0,
-        start_date: '',
-        end_date: '',
-        customer_name: '',
-        customer_phone: '',
-        needs_delivery: false,
-        delivery_address: '',
-        rental_price: 0,
-        delivery_price: 0,
-        delivery_costs: 0,
-        source: 'авито',
-        comment: '',
-      });
+    if (isOpen) {
+      if (rental) {
+        setFormData({
+          equipment_id: rental.equipment_id,
+          start_date: rental.start_date.slice(0, 16),
+          end_date: rental.end_date.slice(0, 16),
+          customer_name: rental.customer_name,
+          customer_phone: rental.customer_phone,
+          needs_delivery: rental.needs_delivery,
+          delivery_address: rental.delivery_address || '',
+          rental_price: rental.rental_price,
+          delivery_price: rental.delivery_price,
+          delivery_costs: rental.delivery_costs,
+          source: rental.source,
+          comment: rental.comment || '',
+        });
+      } else {
+        setFormData({
+          equipment_id: 0,
+          start_date: '',
+          end_date: '',
+          customer_name: '',
+          customer_phone: '',
+          needs_delivery: false,
+          delivery_address: '',
+          rental_price: 0,
+          delivery_price: 0,
+          delivery_costs: 0,
+          source: 'авито',
+          comment: '',
+        });
+      }
+      // Очищаем ошибки валидации при открытии
+      setValidationErrors({});
     }
-  }, [rental]);
+  }, [rental, isOpen]);
 
   const validatePhone = (phone: string): string | null => {
     const cleanPhone = phone.replace(/\D/g, '');
@@ -187,7 +191,7 @@ const RentalModal: React.FC<RentalModalProps> = ({
   if (!isOpen) return null;
 
   const modalContent = (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 sm:p-4 sm:pt-8 sm:pb-8" style={{zIndex: 1000}}>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center z-50 sm:items-start sm:p-4 sm:pt-8 sm:pb-8" style={{zIndex: 1000}}>
       <div className="bg-white shadow-xl w-full h-full sm:w-full sm:max-w-2xl sm:h-auto sm:max-h-[calc(100vh-4rem)] sm:rounded-lg modal-container overflow-y-auto flex flex-col" style={{position: 'relative', zIndex: 1001, paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)'}}>
         <div className="flex-1 flex flex-col p-4 sm:p-6">
           <h3 className="text-lg font-medium text-gray-900 mb-4">

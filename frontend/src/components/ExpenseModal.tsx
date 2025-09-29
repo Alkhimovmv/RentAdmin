@@ -63,7 +63,7 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({
   if (!isOpen) return null;
 
   const modalContent = (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 sm:p-4 sm:pt-8 sm:pb-8 overflow-y-auto" style={{zIndex: 1000}}>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center z-50 sm:items-start sm:p-4 sm:pt-8 sm:pb-8 overflow-y-auto" style={{zIndex: 1000}}>
       <div className="bg-white shadow-xl w-full h-full sm:w-full sm:max-w-md sm:h-auto sm:max-h-[calc(100vh-4rem)] sm:rounded-lg overflow-y-auto flex flex-col" style={{paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)'}}>
         <div className="flex-1 flex flex-col p-4 sm:p-6">
           <h3 className="text-lg font-medium text-gray-900 mb-4">

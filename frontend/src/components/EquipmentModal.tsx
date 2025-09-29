@@ -80,7 +80,7 @@ const EquipmentModal: React.FC<EquipmentModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-start justify-center z-50 sm:p-4 sm:pt-8 sm:pb-8">
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center z-50 sm:items-start sm:p-4 sm:pt-8 sm:pb-8">
       <div className="relative mx-auto border shadow-lg bg-white w-full h-full sm:w-11/12 sm:max-w-md sm:h-auto sm:max-h-[calc(100vh-4rem)] sm:rounded-md overflow-y-auto flex flex-col" style={{paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)'}}>
         <div className="flex-1 flex flex-col p-4 sm:p-5">
           <h3 className="text-lg font-medium text-gray-900 mb-4">

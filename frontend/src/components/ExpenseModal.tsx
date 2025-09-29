@@ -142,10 +142,21 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({
               </button>
               <button
                 type="submit"
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md disabled:opacity-50 font-medium min-h-[44px] touch-manipulation"
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md disabled:opacity-50 font-medium min-h-[44px] touch-manipulation flex items-center justify-center gap-2"
                 disabled={isLoading}
               >
-                {isLoading ? 'Сохранение...' : expense ? 'Обновить' : 'Добавить расход'}
+                {isLoading ? (
+                  'Сохранение...'
+                ) : expense ? (
+                  'Обновить'
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Добавить расход
+                  </>
+                )}
               </button>
             </div>
           </form>

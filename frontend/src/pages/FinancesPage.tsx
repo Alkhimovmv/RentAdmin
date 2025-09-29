@@ -114,9 +114,12 @@ const FinancesPage: React.FC = () => {
           </div>
           <button
             onClick={() => setIsExpenseModalOpen(true)}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-md font-medium w-full sm:w-auto min-h-[44px] touch-manipulation"
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-md font-medium w-full sm:w-auto min-h-[44px] touch-manipulation flex items-center justify-center gap-2"
           >
-            <span className="sm:hidden">+ </span>Добавить расход
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Добавить расход
           </button>
         </div>
       </div>

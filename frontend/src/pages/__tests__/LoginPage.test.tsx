@@ -138,7 +138,7 @@ describe('LoginPage', () => {
   })
 
   it('should display default error message for unknown error types', () => {
-    mockUseAuth.loginError = { some: 'object' }
+    mockUseAuth.loginError = { some: 'object' } as any
 
     render(<LoginPage />)
 

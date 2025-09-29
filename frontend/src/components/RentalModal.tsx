@@ -428,18 +428,18 @@ const RentalModal: React.FC<RentalModalProps> = ({
               />
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4 mt-4">
+            <div className="flex flex-row justify-end space-x-3 pt-4 mt-4">
               <button
                 type="button"
                 onClick={onClose}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md w-full sm:w-auto order-2 sm:order-1 font-medium min-h-[44px] touch-manipulation"
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md font-medium min-h-[44px] touch-manipulation"
                 disabled={isLoading}
               >
                 Отмена
               </button>
               <button
                 type="submit"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md disabled:opacity-50 w-full sm:w-auto order-1 sm:order-2 font-medium min-h-[44px] touch-manipulation"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md disabled:opacity-50 font-medium min-h-[44px] touch-manipulation"
                 disabled={isLoading || !isFormValid()}
               >
                 {isLoading ? 'Сохранение...' : rental ? 'Обновить' : 'Создать'}

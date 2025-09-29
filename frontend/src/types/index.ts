@@ -33,6 +33,8 @@ export interface Rental {
   source: RentalSource;
   comment?: string;
   status: RentalStatus;
+  total_price: number;
+  profit: number;
   created_at: string;
   updated_at: string;
   equipment_name?: string;

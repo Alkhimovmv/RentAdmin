@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -391,7 +391,7 @@ describe('RentalsPage', () => {
     )
 
     // Check for loading spinner
-    expect(screen.getByText((content, element) =>
+    expect(screen.getByText((_content, element) =>
       element?.classList.contains('animate-spin') || false
     )).toBeInTheDocument()
   })
@@ -416,8 +416,6 @@ describe('RentalsPage', () => {
   })
 
   it('should handle date filter selection', async () => {
-    const user = userEvent.setup()
-
     render(
       <TestWrapper>
         <RentalsPage />
@@ -519,7 +517,7 @@ describe('RentalsPage', () => {
 
   it('should show filtered empty state when no rentals match filter', () => {
     // Mock scenario where we have rentals but none match the filter
-    const emptyFilterMock = vi.fn((queryKey) => {
+    const emptyFilterMock = vi.fn((queryKey: any) => {
       if (queryKey[0] === 'rentals') {
         return {
           data: mockRentals, // We have rentals

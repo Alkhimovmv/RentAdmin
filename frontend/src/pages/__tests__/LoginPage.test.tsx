@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import LoginPage from '../LoginPage'
@@ -7,7 +7,7 @@ import LoginPage from '../LoginPage'
 const mockLogin = vi.fn()
 const mockUseAuth = {
   login: mockLogin,
-  loginError: null,
+  loginError: null as string | Error | null,
   loginLoading: false,
   isAuthenticated: false,
 }
@@ -206,7 +206,6 @@ describe('LoginPage', () => {
 
   it('should prevent form submission when loading', async () => {
     mockUseAuth.loginLoading = true
-    const user = userEvent.setup()
 
     render(<LoginPage />)
 
@@ -248,6 +247,7 @@ describe('LoginPage', () => {
   })
 
   it('should maintain focus management properly', async () => {
+    const user = userEvent.setup()
     render(<LoginPage />)
 
     const input = screen.getByLabelText('Пин-код')

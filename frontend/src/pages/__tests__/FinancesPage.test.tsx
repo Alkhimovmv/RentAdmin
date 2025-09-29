@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import FinancesPage from '../FinancesPage'
@@ -378,7 +378,7 @@ describe('FinancesPage', () => {
 
   it('should show empty state when no expenses', () => {
     // Mock empty expenses
-    vi.mocked(require('../../hooks/useAuthenticatedQuery').useAuthenticatedQuery).mockImplementation((queryKey) => {
+    vi.mocked(require('../../hooks/useAuthenticatedQuery').useAuthenticatedQuery).mockImplementation((queryKey: any) => {
       if (queryKey[0] === 'expenses') {
         return {
           data: [],
@@ -435,7 +435,7 @@ describe('FinancesPage', () => {
       net_profit: -2000
     }
 
-    vi.mocked(require('../../hooks/useAuthenticatedQuery').useAuthenticatedQuery).mockImplementation((queryKey) => {
+    vi.mocked(require('../../hooks/useAuthenticatedQuery').useAuthenticatedQuery).mockImplementation((queryKey: any) => {
       if (queryKey[0] === 'expenses') {
         return {
           data: mockExpenses,
@@ -508,8 +508,6 @@ describe('FinancesPage', () => {
   })
 
   it('should handle month selection', async () => {
-    const user = userEvent.setup()
-
     render(
       <TestWrapper>
         <FinancesPage />
@@ -552,7 +550,7 @@ describe('FinancesPage', () => {
       updated_at: '2024-01-15T00:00:00Z'
     }))
 
-    vi.mocked(require('../../hooks/useAuthenticatedQuery').useAuthenticatedQuery).mockImplementation((queryKey) => {
+    vi.mocked(require('../../hooks/useAuthenticatedQuery').useAuthenticatedQuery).mockImplementation((queryKey: any) => {
       if (queryKey[0] === 'expenses') {
         return {
           data: manyExpenses,
@@ -603,7 +601,7 @@ describe('FinancesPage', () => {
       rental_count: i + 1
     }))
 
-    vi.mocked(require('../../hooks/useAuthenticatedQuery').useAuthenticatedQuery).mockImplementation((queryKey) => {
+    vi.mocked(require('../../hooks/useAuthenticatedQuery').useAuthenticatedQuery).mockImplementation((queryKey: any) => {
       if (queryKey[0] === 'expenses') {
         return {
           data: mockExpenses,

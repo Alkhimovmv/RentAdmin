@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -329,7 +329,7 @@ describe('EquipmentPage', () => {
     const user = userEvent.setup()
 
     // Mock successful mutation
-    vi.mocked(mockMutate).mockImplementation((data, { onSuccess }) => {
+    vi.mocked(mockMutate).mockImplementation((_data, { onSuccess }) => {
       if (onSuccess) onSuccess()
     })
 

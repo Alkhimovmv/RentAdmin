@@ -19,6 +19,14 @@ const RentalsPage: React.FC = () => {
 
   const { data: rentals = [], isLoading } = useAuthenticatedQuery<Rental[]>(['rentals'], rentalsApi.getAll);
 
+  // Временное логирование для диагностики
+  React.useEffect(() => {
+    console.log('📊 Rentals data updated, count:', rentals.length);
+    if (rentals.length > 0) {
+      console.log('📊 Latest rental:', rentals[0]);
+    }
+  }, [rentals]);
+
   const { data: equipment = [] } = useAuthenticatedQuery<Equipment[]>(['equipment-rental'], equipmentApi.getForRental);
 
   // Фильтрация аренд по дате
@@ -58,14 +66,26 @@ const RentalsPage: React.FC = () => {
   }, [rentals, dateFilter]);
 
   const createMutation = useMutation(rentalsApi.create, {
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('🎯 Rental created successfully:', data);
+      console.log('🔄 Invalidating and refetching caches...');
+
       queryClient.invalidateQueries({ queryKey: ['rentals'] });
       queryClient.invalidateQueries({ queryKey: ['rentals', 'gantt'] });
       queryClient.invalidateQueries({ queryKey: ['analytics'] });
-      queryClient.refetchQueries({ queryKey: ['rentals'] });
-      queryClient.refetchQueries({ queryKey: ['rentals', 'gantt'] });
+
+      queryClient.refetchQueries({ queryKey: ['rentals'] }).then(() => {
+        console.log('✅ Rentals cache refetched');
+      });
+      queryClient.refetchQueries({ queryKey: ['rentals', 'gantt'] }).then(() => {
+        console.log('✅ Gantt cache refetched');
+      });
+
       setIsModalOpen(false);
     },
+    onError: (error) => {
+      console.error('❌ Rental creation failed:', error);
+    }
   });
 
   const updateMutation = useMutation(

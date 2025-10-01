@@ -33,6 +33,14 @@ const SchedulePage: React.FC = () => {
     () => rentalsApi.getGanttData()
   );
 
+  // Временное логирование для диагностики
+  useEffect(() => {
+    console.log('📈 Gantt data updated, count:', rentals.length);
+    if (rentals.length > 0) {
+      console.log('📈 Latest gantt rental:', rentals[0]);
+    }
+  }, [rentals]);
+
   // Создаем список всех экземпляров оборудования
   const equipmentInstances = useMemo(() => {
     const instances: EquipmentInstance[] = [];

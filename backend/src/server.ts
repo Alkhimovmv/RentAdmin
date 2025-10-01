@@ -26,7 +26,7 @@ const PORT = process.env.PORT || 3001;
 app.use(helmet());
 
 // CORS Configuration - поддержка разработки и продакшена
-const corsOrigin = process.env.CORS_ORIGIN?.trim() || 'https://vozmimenjaadmin.netlify.app';
+const corsOrigin = process.env.CORS_ORIGIN?.trim();
 const allowedOrigins = process.env.NODE_ENV === 'development'
   ? [corsOrigin, 'http://localhost:5173', 'http://localhost:3000', 'http://87.242.103.146']
   : [corsOrigin, 'http://87.242.103.146', 'http://localhost'];
@@ -62,7 +62,7 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
     cors: 'handled by backend',
-    origin: process.env.CORS_ORIGIN?.trim() || 'https://vozmimenjaadmin.netlify.app'
+    origin: process.env.CORS_ORIGIN?.trim()
   });
 });
 

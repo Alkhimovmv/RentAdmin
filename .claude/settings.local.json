@@ -58,7 +58,12 @@
       "Bash(npx knex:*)",
       "Bash(xargs -r kill -9)",
       "Bash(./start-vm.sh:*)",
-      "Bash(./restart-vm.sh:*)"
+      "Bash(./restart-vm.sh:*)",
+      "Bash(killall:*)",
+      "Bash(./deploy-vm.sh)",
+      "Bash(cat:*)",
+      "Bash(awk:*)",
+      "Bash(xargs:*)"
     ],
     "deny": [],
     "ask": []

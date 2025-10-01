@@ -52,12 +52,22 @@ echo ""
 echo "4️⃣  Запуск nginx с новыми файлами..."
 docker-compose -f docker-compose.host.yml up -d
 
+echo "⏳ Ожидание запуска nginx..."
 sleep 3
 
+# Проверяем что nginx работает (не смотрим на логи bind errors - они могут быть из-за retry)
 if docker ps --filter "name=rentadmin_nginx" --filter "status=running" | grep -q rentadmin; then
-    echo "✅ Nginx запущен с новыми файлами"
+    # Дополнительно проверяем что nginx отвечает на запросы
+    if curl -s http://localhost/ > /dev/null 2>&1; then
+        echo "✅ Nginx запущен с новыми файлами и отвечает на запросы"
+    else
+        echo "⚠️  Nginx запущен, но не отвечает на запросы"
+        echo "📋 Логи nginx:"
+        docker logs rentadmin_nginx --tail 20
+    fi
 else
     echo "❌ Nginx не запустился"
+    echo "📋 Логи nginx:"
     docker logs rentadmin_nginx --tail 20
     exit 1
 fi

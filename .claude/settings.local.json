@@ -69,7 +69,8 @@
       "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoZW50aWNhdGVkIjp0cnVlLCJpYXQiOjE3NTkzNTI2NzksImV4cCI6MTc1OTQzOTA3OX0.l1BOKS9M5heCb22JMutW09Z6ujaW63-731XCiLGaqWg\")",
       "Bash(docker logs:*)",
       "Bash(docker exec:*)",
-      "Bash(docker restart:*)"
+      "Bash(docker restart:*)",
+      "Bash(./force-frontend-update.sh:*)"
     ],
     "deny": [],
     "ask": []

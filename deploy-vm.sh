@@ -158,13 +158,24 @@ echo "🐳 Запуск nginx для VM..."
 docker-compose -f docker-compose.host.yml up -d
 
 # Ожидание запуска nginx
-sleep 3
+echo "⏳ Ожидание запуска nginx..."
+sleep 2
 
-# Проверка nginx
-if docker ps | grep -q rentadmin_nginx; then
-    echo "✅ Nginx запущен"
-else
-    echo "❌ Nginx не запустился"
+# Проверка nginx с повторными попытками
+NGINX_READY=0
+for i in {1..10}; do
+    if docker ps --filter "name=rentadmin_nginx" --filter "status=running" | grep -q rentadmin_nginx; then
+        NGINX_READY=1
+        echo "✅ Nginx запущен"
+        break
+    fi
+    sleep 1
+done
+
+if [ $NGINX_READY -eq 0 ]; then
+    echo "❌ Nginx не запустился за 10 секунд"
+    echo "📋 Логи Docker:"
+    docker logs rentadmin_nginx --tail 20
     exit 1
 fi
 

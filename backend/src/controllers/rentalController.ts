@@ -6,21 +6,43 @@ import { createRecord, updateRecord } from '@/utils/dbHelpers';
 export class RentalController {
   async getAll(req: Request, res: Response): Promise<void> {
     try {
-      const rentals: RentalWithEquipment[] = await db('rentals')
-        .join('equipment', 'rentals.equipment_id', 'equipment.id')
-        .select(
-          'rentals.*',
-          'equipment.name as equipment_name'
-        )
-        .orderBy('rentals.start_date', 'desc');
+      const equipment = await db('equipment').select('*');
+      const rawRentals = await db('rentals').select('*').orderBy('start_date', 'desc');
 
-      const rentalsWithStatus = rentals.map(rental => ({
+      // Формируем аренды с названиями оборудования
+      const rentalsWithEquipment = rawRentals.map(rental => {
+        // Извлекаем реальный ID оборудования из виртуального
+        const realEquipmentId = rental.equipment_id > 1000
+          ? Math.floor(rental.equipment_id / 1000)
+          : rental.equipment_id;
+
+        // Найдем оборудование по реальному ID
+        const baseEquipment = equipment.find(eq => eq.id === realEquipmentId);
+
+        let equipment_name = 'Неизвестное оборудование';
+        if (baseEquipment) {
+          if (rental.equipment_id > 1000) {
+            const instanceNumber = rental.equipment_id % 1000;
+            equipment_name = `${baseEquipment.name} №${instanceNumber}`;
+          } else {
+            equipment_name = baseEquipment.name;
+          }
+        }
+
+        return {
+          ...rental,
+          equipment_name
+        };
+      });
+
+      const rentalsWithStatus = rentalsWithEquipment.map(rental => ({
         ...rental,
         status: this.calculateStatus(rental)
       }));
 
       res.json(rentalsWithStatus);
     } catch (error) {
+      console.error('Error getting rentals:', error);
       res.status(500).json({ error: 'Ошибка получения аренд' });
     }
   }
@@ -99,29 +121,51 @@ export class RentalController {
     try {
       const { startDate, endDate } = req.query;
 
-      let query = db('rentals')
-        .join('equipment', 'rentals.equipment_id', 'equipment.id')
-        .select(
-          'rentals.*',
-          'equipment.name as equipment_name'
-        );
+      const equipment = await db('equipment').select('*');
+
+      let query = db('rentals').select('*');
 
       if (startDate && endDate) {
         query = query.whereRaw(
-          'rentals.start_date <= ? AND rentals.end_date >= ?',
+          'start_date <= ? AND end_date >= ?',
           [endDate, startDate]
         );
       }
 
-      const rentals: RentalWithEquipment[] = await query.orderBy('rentals.start_date');
+      const ganttRentals = await query.orderBy('start_date');
 
-      const ganttData = rentals.map(rental => ({
+      // Формируем аренды с названиями оборудования (аналогично getAll)
+      const rentalsWithEquipment = ganttRentals.map(rental => {
+        const realEquipmentId = rental.equipment_id > 1000
+          ? Math.floor(rental.equipment_id / 1000)
+          : rental.equipment_id;
+
+        const baseEquipment = equipment.find(eq => eq.id === realEquipmentId);
+
+        let equipment_name = 'Неизвестное оборудование';
+        if (baseEquipment) {
+          if (rental.equipment_id > 1000) {
+            const instanceNumber = rental.equipment_id % 1000;
+            equipment_name = `${baseEquipment.name} №${instanceNumber}`;
+          } else {
+            equipment_name = baseEquipment.name;
+          }
+        }
+
+        return {
+          ...rental,
+          equipment_name
+        };
+      });
+
+      const ganttData = rentalsWithEquipment.map(rental => ({
         ...rental,
         status: this.calculateStatus(rental)
       }));
 
       res.json(ganttData);
     } catch (error) {
+      console.error('Error getting Gantt data:', error);
       res.status(500).json({ error: 'Ошибка получения данных для диаграммы Ганта' });
     }
   }

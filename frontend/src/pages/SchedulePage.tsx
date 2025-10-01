@@ -69,7 +69,10 @@ const SchedulePage: React.FC = () => {
   const timeSlots = generateTimeSlots();
 
   const getRentalForInstanceAndTime = (instanceId: string, date: Date, hour: number) => {
-    const [equipmentId] = instanceId.split('-').map(Number);
+    const [equipmentId, instanceNumber] = instanceId.split('-').map(Number);
+
+    // Формируем виртуальный ID аналогично бэкенду: equipmentId * 1000 + instanceNumber
+    const virtualEquipmentId = equipmentId * 1000 + instanceNumber;
 
     return rentals.find(rental => {
       const startDate = parseISO(rental.start_date);
@@ -78,7 +81,8 @@ const SchedulePage: React.FC = () => {
       const checkTime = new Date(date);
       checkTime.setHours(hour, 0, 0, 0);
 
-      return rental.equipment_id === equipmentId &&
+      // Сравниваем с виртуальным ID
+      return rental.equipment_id === virtualEquipmentId &&
              startDate <= checkTime &&
              endDate > checkTime;
     });
@@ -86,7 +90,10 @@ const SchedulePage: React.FC = () => {
 
   // Функция для проверки пересечений аренд
   const getConflictingRentals = (instanceId: string, date: Date, hour: number) => {
-    const [equipmentId] = instanceId.split('-').map(Number);
+    const [equipmentId, instanceNumber] = instanceId.split('-').map(Number);
+
+    // Формируем виртуальный ID аналогично бэкенду
+    const virtualEquipmentId = equipmentId * 1000 + instanceNumber;
 
     const checkTime = new Date(date);
     checkTime.setHours(hour, 0, 0, 0);
@@ -97,7 +104,7 @@ const SchedulePage: React.FC = () => {
       const startDate = parseISO(rental.start_date);
       const endDate = parseISO(rental.end_date);
 
-      return rental.equipment_id === equipmentId &&
+      return rental.equipment_id === virtualEquipmentId &&
              startDate < checkTimeEnd &&
              endDate > checkTime;
     });

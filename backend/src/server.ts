@@ -25,12 +25,16 @@ const PORT = process.env.PORT || 3001;
 
 app.use(helmet());
 
-// CORS Configuration - только один источник, правильно настроенный
+// CORS Configuration - поддержка разработки и продакшена
 const corsOrigin = process.env.CORS_ORIGIN?.trim() || 'https://vozmimenjaadmin.netlify.app';
-logger.info(`CORS origin: ${corsOrigin}`);
+const allowedOrigins = process.env.NODE_ENV === 'development'
+  ? [corsOrigin, 'http://localhost:5173', 'http://localhost:3000']
+  : corsOrigin;
+
+logger.info(`CORS origins: ${JSON.stringify(allowedOrigins)}`);
 
 app.use(cors({
-  origin: corsOrigin, // Только одно значение, без массива
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept'],

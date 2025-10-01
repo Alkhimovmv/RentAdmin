@@ -29,7 +29,7 @@ app.use(helmet());
 const corsOrigin = process.env.CORS_ORIGIN?.trim() || 'https://vozmimenjaadmin.netlify.app';
 const allowedOrigins = process.env.NODE_ENV === 'development'
   ? [corsOrigin, 'http://localhost:5173', 'http://localhost:3000', 'http://87.242.103.146']
-  : corsOrigin;
+  : [corsOrigin, 'http://87.242.103.146', 'http://localhost'];
 
 logger.info(`CORS origins: ${JSON.stringify(allowedOrigins)}`);
 

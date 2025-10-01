@@ -56,7 +56,9 @@
       "Bash(/home/maxim/Android/Sdk/platform-tools/sqlite3 dev.sqlite3 \".schema rentals\")",
       "Bash(npx tsc:*)",
       "Bash(npx knex:*)",
-      "Bash(xargs -r kill -9)"
+      "Bash(xargs -r kill -9)",
+      "Bash(./start-vm.sh:*)",
+      "Bash(./restart-vm.sh:*)"
     ],
     "deny": [],
     "ask": []

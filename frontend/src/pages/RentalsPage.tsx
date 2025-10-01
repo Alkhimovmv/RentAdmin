@@ -59,7 +59,8 @@ const RentalsPage: React.FC = () => {
 
   const createMutation = useMutation(rentalsApi.create, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['rentals']);
+      queryClient.invalidateQueries({ queryKey: ['rentals'] });
+      queryClient.invalidateQueries({ queryKey: ['analytics'] });
       setIsModalOpen(false);
     },
   });
@@ -69,7 +70,8 @@ const RentalsPage: React.FC = () => {
       rentalsApi.update(id, data),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(['rentals']);
+        queryClient.invalidateQueries({ queryKey: ['rentals'] });
+        queryClient.invalidateQueries({ queryKey: ['analytics'] });
         setIsModalOpen(false);
         setEditingRental(null);
       },
@@ -78,7 +80,8 @@ const RentalsPage: React.FC = () => {
 
   const deleteMutation = useMutation(rentalsApi.delete, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['rentals']);
+      queryClient.invalidateQueries({ queryKey: ['rentals'] });
+      queryClient.invalidateQueries({ queryKey: ['analytics'] });
     },
   });
 

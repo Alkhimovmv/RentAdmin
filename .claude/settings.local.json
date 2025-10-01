@@ -53,7 +53,8 @@
       "Bash(./local-start.sh:*)",
       "Bash(command -v:*)",
       "Bash(sqlite3:*)",
-      "Bash(/home/maxim/Android/Sdk/platform-tools/sqlite3 dev.sqlite3 \".schema rentals\")"
+      "Bash(/home/maxim/Android/Sdk/platform-tools/sqlite3 dev.sqlite3 \".schema rentals\")",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []

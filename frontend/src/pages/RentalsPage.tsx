@@ -14,7 +14,7 @@ type DateFilter = 'week' | 'month' | 'all';
 const RentalsPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRental, setEditingRental] = useState<Rental | null>(null);
-  const [dateFilter, setDateFilter] = useState<DateFilter>('week');
+  const [dateFilter, setDateFilter] = useState<DateFilter>('all');
   const queryClient = useQueryClient();
 
   const { data: rentals = [], isLoading } = useAuthenticatedQuery<Rental[]>(['rentals'], rentalsApi.getAll);
@@ -31,7 +31,14 @@ const RentalsPage: React.FC = () => {
 
   // Фильтрация аренд по дате
   const filteredRentals = useMemo(() => {
+    console.log('🔍 Filtering rentals:', {
+      total: rentals.length,
+      filter: dateFilter,
+      rentals: rentals.map(r => ({ id: r.id, start: r.start_date, end: r.end_date }))
+    });
+
     if (dateFilter === 'all') {
+      console.log('✅ Showing all rentals:', rentals.length);
       return rentals;
     }
 
@@ -54,15 +61,23 @@ const RentalsPage: React.FC = () => {
       return rentals;
     }
 
-    return rentals.filter(rental => {
+    console.log('📅 Date range:', dateRange);
+
+    const filtered = rentals.filter(rental => {
       const rentalStart = new Date(rental.start_date);
       const rentalEnd = new Date(rental.end_date);
 
       // Проверяем, пересекается ли аренда с выбранным периодом
-      return isWithinInterval(rentalStart, dateRange) ||
+      const matches = isWithinInterval(rentalStart, dateRange) ||
              isWithinInterval(rentalEnd, dateRange) ||
              (rentalStart <= dateRange.start && rentalEnd >= dateRange.end);
+
+      console.log(`🎯 Rental ${rental.id} (${rental.start_date} - ${rental.end_date}): ${matches ? 'INCLUDED' : 'EXCLUDED'}`);
+      return matches;
     });
+
+    console.log('✅ Filtered rentals:', filtered.length);
+    return filtered;
   }, [rentals, dateFilter]);
 
   const createMutation = useMutation(rentalsApi.create, {

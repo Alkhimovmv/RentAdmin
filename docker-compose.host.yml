@@ -6,4 +6,4 @@ services:
     volumes:
       - ./nginx-host.conf:/etc/nginx/nginx.conf
       - ./frontend/dist:/usr/share/nginx/html
-    restart: unless-stopped
+    restart: "no"

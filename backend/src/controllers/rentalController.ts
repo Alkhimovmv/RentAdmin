@@ -15,14 +15,49 @@ export class RentalController {
         console.log('🔍 RentalController.getAll - First rental:', rawRentals[0]);
       }
 
+      // Получаем данные о множественном оборудовании
+      const rentalEquipmentLinks = await db('rental_equipment').select('*');
+
       // Формируем аренды с названиями оборудования
       const rentalsWithEquipment = rawRentals.map(rental => {
-        // Извлекаем реальный ID оборудования из виртуального
+        // Проверяем, есть ли связи в rental_equipment
+        const equipmentLinks = rentalEquipmentLinks.filter(link => link.rental_id === rental.id);
+
+        if (equipmentLinks.length > 0) {
+          // Множественное оборудование
+          const equipment_list = equipmentLinks.map(link => {
+            // Извлекаем реальный ID из виртуального (4001 -> 4)
+            const realEquipmentId = link.equipment_id > 1000
+              ? Math.floor(link.equipment_id / 1000)
+              : link.equipment_id;
+
+            const eq = equipment.find(e => e.id === realEquipmentId);
+
+            if (eq) {
+              if (link.equipment_id > 1000) {
+                const instanceNumber = link.equipment_id % 1000;
+                return { id: link.equipment_id, name: `${eq.name} №${instanceNumber}` };
+              }
+              return { id: link.equipment_id, name: eq.name };
+            }
+
+            return { id: link.equipment_id, name: 'Неизвестное' };
+          });
+
+          const equipment_name = equipment_list.map(e => e.name).join(', ');
+
+          return {
+            ...rental,
+            equipment_name,
+            equipment_list
+          };
+        }
+
+        // Старая логика для одиночного оборудования
         const realEquipmentId = rental.equipment_id > 1000
           ? Math.floor(rental.equipment_id / 1000)
           : rental.equipment_id;
 
-        // Найдем оборудование по реальному ID
         const baseEquipment = equipment.find(eq => eq.id === realEquipmentId);
 
         let equipment_name = 'Неизвестное оборудование';
@@ -82,10 +117,34 @@ export class RentalController {
       const rentalData: CreateRentalDto = req.body;
       console.log('🎯 RentalController.create - Creating rental with data:', rentalData);
 
-      const rental = await createRecord<Rental>('rentals', rentalData);
-      console.log('✅ RentalController.create - Rental created successfully:', rental);
+      // Если указан массив equipment_ids, создаем множественную аренду
+      if (rentalData.equipment_ids && rentalData.equipment_ids.length > 0) {
+        // Создаем базовую аренду
+        const baseRentalData = { ...rentalData };
+        delete baseRentalData.equipment_ids;
 
-      res.status(201).json(rental);
+        // Используем первый ID как основной
+        baseRentalData.equipment_id = rentalData.equipment_ids[0];
+
+        const rental = await createRecord<Rental>('rentals', baseRentalData);
+
+        // Добавляем связи для всех выбранных единиц оборудования
+        const rentalEquipmentRecords = rentalData.equipment_ids.map(equipmentId => ({
+          rental_id: rental.id,
+          equipment_id: equipmentId
+        }));
+
+        await db('rental_equipment').insert(rentalEquipmentRecords);
+        console.log('✅ RentalController.create - Multiple equipment rental created:', rental.id);
+
+        res.status(201).json(rental);
+      } else {
+        // Обычная аренда с одним оборудованием
+        const rental = await createRecord<Rental>('rentals', rentalData);
+        console.log('✅ RentalController.create - Rental created successfully:', rental);
+
+        res.status(201).json(rental);
+      }
     } catch (error) {
       console.error('❌ Rental create error:', error);
       res.status(500).json({ error: 'Ошибка создания аренды' });
@@ -97,14 +156,44 @@ export class RentalController {
       const { id } = req.params;
       const updateData: UpdateRentalDto = req.body;
 
-      const rental = await updateRecord<Rental>('rentals', id, updateData);
+      // Если указан массив equipment_ids, обновляем связи
+      if (updateData.equipment_ids && updateData.equipment_ids.length > 0) {
+        const baseUpdateData = { ...updateData };
+        delete baseUpdateData.equipment_ids;
 
-      if (!rental) {
-        res.status(404).json({ error: 'Аренда не найдена' });
-        return;
+        // Используем первый ID как основной
+        baseUpdateData.equipment_id = updateData.equipment_ids[0];
+
+        const rental = await updateRecord<Rental>('rentals', id, baseUpdateData);
+
+        if (!rental) {
+          res.status(404).json({ error: 'Аренда не найдена' });
+          return;
+        }
+
+        // Удаляем старые связи
+        await db('rental_equipment').where('rental_id', id).del();
+
+        // Добавляем новые связи
+        const rentalEquipmentRecords = updateData.equipment_ids.map(equipmentId => ({
+          rental_id: Number(id),
+          equipment_id: equipmentId
+        }));
+
+        await db('rental_equipment').insert(rentalEquipmentRecords);
+        console.log('✅ RentalController.update - Multiple equipment rental updated:', id);
+
+        res.json(rental);
+      } else {
+        const rental = await updateRecord<Rental>('rentals', id, updateData);
+
+        if (!rental) {
+          res.status(404).json({ error: 'Аренда не найдена' });
+          return;
+        }
+
+        res.json(rental);
       }
-
-      res.json(rental);
     } catch (error) {
       console.error('Rental update error:', error);
       res.status(500).json({ error: 'Ошибка обновления аренды' });
@@ -144,34 +233,67 @@ export class RentalController {
 
       const ganttRentals = await query.orderBy('start_date');
 
-      // Формируем аренды с названиями оборудования (аналогично getAll)
-      const rentalsWithEquipment = ganttRentals.map(rental => {
-        const realEquipmentId = rental.equipment_id > 1000
-          ? Math.floor(rental.equipment_id / 1000)
-          : rental.equipment_id;
+      // Получаем данные о множественном оборудовании
+      const rentalEquipmentLinks = await db('rental_equipment').select('*');
 
-        const baseEquipment = equipment.find(eq => eq.id === realEquipmentId);
+      // Формируем записи для графика - каждая единица оборудования становится отдельной записью
+      const ganttData: any[] = [];
 
-        let equipment_name = 'Неизвестное оборудование';
-        if (baseEquipment) {
-          if (rental.equipment_id > 1000) {
-            const instanceNumber = rental.equipment_id % 1000;
-            equipment_name = `${baseEquipment.name} №${instanceNumber}`;
-          } else {
-            equipment_name = baseEquipment.name;
+      ganttRentals.forEach(rental => {
+        // Проверяем, есть ли связи в rental_equipment
+        const equipmentLinks = rentalEquipmentLinks.filter(link => link.rental_id === rental.id);
+
+        if (equipmentLinks.length > 0) {
+          // Множественное оборудование - создаем отдельную запись для каждой единицы
+          equipmentLinks.forEach(link => {
+            const realEquipmentId = link.equipment_id > 1000
+              ? Math.floor(link.equipment_id / 1000)
+              : link.equipment_id;
+
+            const eq = equipment.find(e => e.id === realEquipmentId);
+
+            let equipment_name = 'Неизвестное оборудование';
+            if (eq) {
+              if (link.equipment_id > 1000) {
+                const instanceNumber = link.equipment_id % 1000;
+                equipment_name = `${eq.name} №${instanceNumber}`;
+              } else {
+                equipment_name = eq.name;
+              }
+            }
+
+            ganttData.push({
+              ...rental,
+              equipment_id: link.equipment_id,
+              equipment_name,
+              status: this.calculateStatus(rental)
+            });
+          });
+        } else {
+          // Старая логика для одиночного оборудования
+          const realEquipmentId = rental.equipment_id > 1000
+            ? Math.floor(rental.equipment_id / 1000)
+            : rental.equipment_id;
+
+          const baseEquipment = equipment.find(eq => eq.id === realEquipmentId);
+
+          let equipment_name = 'Неизвестное оборудование';
+          if (baseEquipment) {
+            if (rental.equipment_id > 1000) {
+              const instanceNumber = rental.equipment_id % 1000;
+              equipment_name = `${baseEquipment.name} №${instanceNumber}`;
+            } else {
+              equipment_name = baseEquipment.name;
+            }
           }
+
+          ganttData.push({
+            ...rental,
+            equipment_name,
+            status: this.calculateStatus(rental)
+          });
         }
-
-        return {
-          ...rental,
-          equipment_name
-        };
       });
-
-      const ganttData = rentalsWithEquipment.map(rental => ({
-        ...rental,
-        status: this.calculateStatus(rental)
-      }));
 
       res.json(ganttData);
     } catch (error) {

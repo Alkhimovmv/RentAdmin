@@ -38,10 +38,12 @@ export interface Rental {
   created_at: string;
   updated_at: string;
   equipment_name?: string;
+  equipment_list?: Array<{ id: number; name: string }>; // Список оборудования для множественного выбора
 }
 
 export interface CreateRentalDto {
   equipment_id: number;
+  equipment_ids?: number[]; // Новое поле для множественного выбора
   start_date: string;
   end_date: string;
   customer_name: string;

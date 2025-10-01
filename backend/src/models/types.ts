@@ -46,6 +46,7 @@ export interface Rental {
 
 export interface CreateRentalDto {
   equipment_id: number;
+  equipment_ids?: number[]; // Новое поле для множественного выбора
   start_date: Date;
   end_date: Date;
   customer_name: string;
@@ -61,6 +62,7 @@ export interface CreateRentalDto {
 
 export interface UpdateRentalDto {
   equipment_id?: number;
+  equipment_ids?: number[]; // Новое поле для множественного выбора
   start_date?: Date;
   end_date?: Date;
   customer_name?: string;
@@ -114,4 +116,5 @@ export interface MonthlyRevenue {
 
 export interface RentalWithEquipment extends Rental {
   equipment_name: string;
+  equipment_list?: Array<{ id: number; name: string }>; // Список оборудования для множественного выбора
 }

@@ -21,6 +21,7 @@ const RentalModal: React.FC<RentalModalProps> = ({
 }) => {
   const [formData, setFormData] = useState<CreateRentalDto>({
     equipment_id: 0,
+    equipment_ids: [],
     start_date: '',
     end_date: '',
     customer_name: '',
@@ -46,8 +47,14 @@ const RentalModal: React.FC<RentalModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       if (rental) {
+        // Если есть equipment_list, используем его для множественного выбора
+        const equipmentIds = rental.equipment_list
+          ? rental.equipment_list.map(eq => eq.id)
+          : [rental.equipment_id];
+
         setFormData({
           equipment_id: rental.equipment_id,
+          equipment_ids: equipmentIds,
           start_date: rental.start_date.slice(0, 16),
           end_date: rental.end_date.slice(0, 16),
           customer_name: rental.customer_name,
@@ -63,6 +70,7 @@ const RentalModal: React.FC<RentalModalProps> = ({
       } else {
         setFormData({
           equipment_id: 0,
+          equipment_ids: [],
           start_date: '',
           end_date: '',
           customer_name: '',
@@ -125,7 +133,7 @@ const RentalModal: React.FC<RentalModalProps> = ({
     const dateError = validateDates(formData.start_date, formData.end_date);
 
     // Проверяем все обязательные поля
-    const isEquipmentSelected = formData.equipment_id > 0;
+    const isEquipmentSelected = (formData.equipment_ids && formData.equipment_ids.length > 0) || formData.equipment_id > 0;
     const hasStartDate = formData.start_date.trim() !== '';
     const hasEndDate = formData.end_date.trim() !== '';
     const hasCustomerName = formData.customer_name.trim() !== '';
@@ -138,8 +146,8 @@ const RentalModal: React.FC<RentalModalProps> = ({
     const errors: typeof validationErrors = {};
 
     // Валидация оборудования
-    if (!formData.equipment_id) {
-      errors.equipment = 'Необходимо выбрать оборудование';
+    if ((!formData.equipment_ids || formData.equipment_ids.length === 0) && !formData.equipment_id) {
+      errors.equipment = 'Необходимо выбрать хотя бы одно оборудование';
     }
 
     // Валидация дат
@@ -201,28 +209,48 @@ const RentalModal: React.FC<RentalModalProps> = ({
           <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
             <div className="flex-1 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Оборудование
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Оборудование (можно выбрать несколько)
                 </label>
-                <CustomSelect
-                  value={formData.equipment_id ? formData.equipment_id.toString() : ''}
-                  onChange={(selectedValue) => {
-                    const equipmentId = Number(selectedValue);
-                    setFormData({
-                      ...formData,
-                      equipment_id: equipmentId
-                    });
-                    // Очищаем ошибку при выборе
-                    setValidationErrors(prev => ({ ...prev, equipment: null }));
-                  }}
-                  options={equipment.map((item) => ({
-                    value: item.id.toString(),
-                    label: item.name
-                  }))}
-                  placeholder="Выберите оборудование"
-                  required
-                />
+                <div className="space-y-2 max-h-48 overflow-y-auto border border-gray-300 rounded-md p-3">
+                  {equipment.map((item) => (
+                    <label key={item.id} className="flex items-center space-x-3 hover:bg-gray-50 p-2 rounded cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.equipment_ids?.includes(item.id) || false}
+                        onChange={(e) => {
+                          const currentIds = formData.equipment_ids || [];
+                          let newIds: number[];
+
+                          if (e.target.checked) {
+                            newIds = [...currentIds, item.id];
+                          } else {
+                            newIds = currentIds.filter(id => id !== item.id);
+                          }
+
+                          setFormData({
+                            ...formData,
+                            equipment_id: newIds.length > 0 ? newIds[0] : 0,
+                            equipment_ids: newIds
+                          });
+
+                          // Очищаем ошибку при выборе
+                          if (newIds.length > 0) {
+                            setValidationErrors(prev => ({ ...prev, equipment: null }));
+                          }
+                        }}
+                        className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                      />
+                      <span className="text-sm text-gray-900">{item.name}</span>
+                    </label>
+                  ))}
+                </div>
+                {formData.equipment_ids && formData.equipment_ids.length > 0 && (
+                  <div className="text-sm text-gray-600 mt-2">
+                    Выбрано: {formData.equipment_ids.length} единиц оборудования
+                  </div>
+                )}
                 {validationErrors.equipment && (
                   <div className="text-red-600 text-sm mt-1">
                     {validationErrors.equipment}

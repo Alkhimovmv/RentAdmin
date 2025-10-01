@@ -63,7 +63,9 @@
       "Bash(./deploy-vm.sh)",
       "Bash(cat:*)",
       "Bash(awk:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "Bash(./quick-frontend-update.sh:*)",
+      "Bash(docker ps:*)"
     ],
     "deny": [],
     "ask": []

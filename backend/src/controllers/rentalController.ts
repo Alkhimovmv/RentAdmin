@@ -9,6 +9,12 @@ export class RentalController {
       const equipment = await db('equipment').select('*');
       const rawRentals = await db('rentals').select('*').orderBy('start_date', 'desc');
 
+      console.log('🔍 RentalController.getAll - Equipment count:', equipment.length);
+      console.log('🔍 RentalController.getAll - Raw rentals count:', rawRentals.length);
+      if (rawRentals.length > 0) {
+        console.log('🔍 RentalController.getAll - First rental:', rawRentals[0]);
+      }
+
       // Формируем аренды с названиями оборудования
       const rentalsWithEquipment = rawRentals.map(rental => {
         // Извлекаем реальный ID оборудования из виртуального
@@ -74,10 +80,14 @@ export class RentalController {
   async create(req: Request, res: Response): Promise<void> {
     try {
       const rentalData: CreateRentalDto = req.body;
+      console.log('🎯 RentalController.create - Creating rental with data:', rentalData);
+
       const rental = await createRecord<Rental>('rentals', rentalData);
+      console.log('✅ RentalController.create - Rental created successfully:', rental);
+
       res.status(201).json(rental);
     } catch (error) {
-      console.error('Rental create error:', error);
+      console.error('❌ Rental create error:', error);
       res.status(500).json({ error: 'Ошибка создания аренды' });
     }
   }

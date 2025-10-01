@@ -35,7 +35,7 @@ const config = {
   production: {
     client: 'sqlite3',
     connection: {
-      filename: './production.sqlite3'
+      filename: './dev.sqlite3'  // Используем ту же БД что и в development
     },
     useNullAsDefault: true,
     migrations: {

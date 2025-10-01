@@ -124,8 +124,8 @@ else
     echo "ℹ️  База данных будет создана при первом запуске"
 fi
 
-# Запуск в фоне
-nohup npm start > backend.log 2>&1 &
+# Запуск в фоне с production окружением
+NODE_ENV=production nohup npm start > backend.log 2>&1 &
 NPM_PID=$!
 
 # Ожидание запуска

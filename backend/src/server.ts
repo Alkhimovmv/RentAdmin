@@ -28,7 +28,7 @@ app.use(helmet());
 // CORS Configuration - поддержка разработки и продакшена
 const corsOrigin = process.env.CORS_ORIGIN?.trim();
 const allowedOrigins = (process.env.NODE_ENV === 'development'
-  ? [corsOrigin, 'http://localhost:5173', 'http://localhost:3000', 'http://87.242.103.146']
+  ? [corsOrigin, 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5173', 'http://localhost:3000', 'http://87.242.103.146']
   : [corsOrigin, 'http://87.242.103.146', 'http://localhost']
 ).filter((origin): origin is string => origin !== undefined);
 

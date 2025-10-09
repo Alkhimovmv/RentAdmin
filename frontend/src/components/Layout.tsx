@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import logo from '../../public/icon.jpg'
+import logo from '../../public/logo-header.png'
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -59,13 +59,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       `}>
         {/* Desktop Header */}
         <div className={`${!isCompactMode ? 'flex' : 'hidden'} items-center justify-center h-16 px-4 bg-indigo-600`}>
-          <img src={logo} width={30} height={30} className="mr-5"/>
-          <h1 className="text-xl font-bold text-white">Возьми меня</h1>
+          <img src={logo} width={45} height={45} className="mr-5"/>
+          <h1 className="text-xl font-bold text-white whitespace-nowrap">Возьми меня</h1>
         </div>
 
         {/* Mobile Header in Sidebar */}
         <div className={`${isCompactMode ? 'flex' : 'hidden'} items-center justify-center h-14 bg-indigo-600`}>
-          <img src={logo} width={24} height={24}/>
+          <img src={logo} width={36} height={36}/>
         </div>
 
         <nav className={`flex-1 ${isCompactMode ? 'px-1' : 'px-4'} py-3 space-y-2`}>

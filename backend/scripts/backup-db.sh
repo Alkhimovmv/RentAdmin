@@ -25,13 +25,24 @@ DB_TYPE="unknown"
 
 # Проверяем наличие SQLite файлов
 SQLITE_DB=""
-for db_file in "$BACKEND_DIR"/*.sqlite* "$BACKEND_DIR"/*.db; do
+echo "🔍 Searching for database files in: $BACKEND_DIR"
+
+# Проверяем стандартные места SQLite
+for db_file in "$BACKEND_DIR"/*.sqlite* "$BACKEND_DIR"/*.db "$BACKEND_DIR/data"/*.sqlite* "$BACKEND_DIR/database"/*.sqlite*; do
     if [ -f "$db_file" ] && [ -s "$db_file" ]; then
         SQLITE_DB="$db_file"
         DB_TYPE="sqlite"
+        echo "✅ Found SQLite database: $db_file"
         break
     fi
 done
+
+# Если не нашли, показываем что есть
+if [ "$DB_TYPE" = "unknown" ]; then
+    echo "📂 Files in backend directory:"
+    ls -lh "$BACKEND_DIR"/*.{sqlite,sqlite3,db} 2>/dev/null || echo "   No SQLite files found"
+    echo ""
+fi
 
 # Параметры подключения для PostgreSQL
 DB_HOST=${DB_HOST:-localhost}

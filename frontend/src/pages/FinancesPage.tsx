@@ -226,7 +226,7 @@ const FinancesPage: React.FC = () => {
                 </div>
                 <div className="flex flex-row items-center justify-between sm:flex-col sm:items-end space-x-3 sm:space-x-0 sm:space-y-2">
                   <div className="text-sm font-medium text-red-600 whitespace-nowrap">
-                    -{expense.amount.toLocaleString()}₽
+                    {expense.amount !== null ? `-${expense.amount.toLocaleString()}₽` : 'Не указана'}
                   </div>
                   <div className="flex space-x-2 sm:space-x-3">
                     <button

@@ -59,7 +59,7 @@ const EquipmentPage: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const totalValue = equipment.reduce((sum, item) => sum + (item.base_price * item.quantity), 0);
+  const totalValue = equipment.reduce((sum, item) => sum + ((item.base_price ?? 0) * item.quantity), 0);
   const totalItems = equipment.reduce((sum, item) => sum + item.quantity, 0);
 
   if (isLoading) {
@@ -131,8 +131,8 @@ const EquipmentPage: React.FC = () => {
                   </div>
 
                   <div className="mt-2 flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4 text-sm text-gray-500">
-                    <span>💰 Цена: {item.base_price}₽</span>
-                    <span>📊 Общая стоимость: {(item.base_price * item.quantity).toLocaleString()}₽</span>
+                    <span>💰 Цена: {item.base_price !== null ? `${item.base_price}₽` : 'Не указана'}</span>
+                    <span>📊 Общая стоимость: {item.base_price !== null ? `${(item.base_price * item.quantity).toLocaleString()}₽` : 'Не указана'}</span>
                   </div>
                 </div>
 

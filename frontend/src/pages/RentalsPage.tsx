@@ -7,6 +7,7 @@ import type { Rental, CreateRentalDto, Equipment } from '../types/index';
 import { formatDate, getStatusText, getStatusColor, getSourceText } from '../utils/dateUtils';
 import RentalModal from '../components/RentalModal';
 import CustomSelect from '../components/CustomSelect';
+import ConfirmDialog from '../components/ConfirmDialog';
 import { subDays, startOfDay, endOfDay, isWithinInterval, startOfMonth, endOfMonth } from 'date-fns';
 
 type DateFilter = 'week' | 'month' | 'all';
@@ -15,6 +16,10 @@ const RentalsPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRental, setEditingRental] = useState<Rental | null>(null);
   const [dateFilter, setDateFilter] = useState<DateFilter>('all');
+  const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; rentalId: number | null }>({
+    isOpen: false,
+    rentalId: null,
+  });
   const queryClient = useQueryClient();
 
   const { data: rentals = [], isLoading } = useAuthenticatedQuery<Rental[]>(['rentals'], rentalsApi.getAll);
@@ -143,9 +148,18 @@ const RentalsPage: React.FC = () => {
   };
 
   const handleDeleteRental = (id: number) => {
-    if (window.confirm('Вы уверены, что хотите удалить эту аренду?')) {
-      deleteMutation.mutate(id);
+    setDeleteConfirm({ isOpen: true, rentalId: id });
+  };
+
+  const confirmDelete = () => {
+    if (deleteConfirm.rentalId) {
+      deleteMutation.mutate(deleteConfirm.rentalId);
     }
+    setDeleteConfirm({ isOpen: false, rentalId: null });
+  };
+
+  const cancelDelete = () => {
+    setDeleteConfirm({ isOpen: false, rentalId: null });
   };
 
   const handleEditRental = (rental: Rental) => {
@@ -295,6 +309,17 @@ const RentalsPage: React.FC = () => {
         rental={editingRental}
         equipment={equipment}
         isLoading={createMutation.isPending || updateMutation.isPending}
+      />
+
+      <ConfirmDialog
+        isOpen={deleteConfirm.isOpen}
+        title="Удаление аренды"
+        message="Вы уверены, что хотите удалить эту аренду? Это действие нельзя будет отменить."
+        confirmText="Удалить"
+        cancelText="Отмена"
+        type="danger"
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
       />
     </div>
   );

@@ -28,9 +28,9 @@ const RentalModal: React.FC<RentalModalProps> = ({
     customer_phone: '',
     needs_delivery: false,
     delivery_address: '',
-    rental_price: 0,
-    delivery_price: 0,
-    delivery_costs: 0,
+    rental_price: null,
+    delivery_price: null,
+    delivery_costs: null,
     source: 'авито',
     comment: '',
   });
@@ -77,9 +77,9 @@ const RentalModal: React.FC<RentalModalProps> = ({
           customer_phone: '',
           needs_delivery: false,
           delivery_address: '',
-          rental_price: 0,
-          delivery_price: 0,
-          delivery_costs: 0,
+          rental_price: null,
+          delivery_price: null,
+          delivery_costs: null,
           source: 'авито',
           comment: '',
         });
@@ -383,10 +383,10 @@ const RentalModal: React.FC<RentalModalProps> = ({
                 </label>
                 <input
                   type="number"
-                  value={formData.rental_price}
-                  onChange={(e) => setFormData({ ...formData, rental_price: Number(e.target.value) })}
+                  value={formData.rental_price ?? ''}
+                  onChange={(e) => setFormData({ ...formData, rental_price: e.target.value === '' ? null : Number(e.target.value) })}
                   className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  required
+                  placeholder="Не указана"
                   min="0"
                   step="10"
                 />
@@ -425,9 +425,10 @@ const RentalModal: React.FC<RentalModalProps> = ({
                   </label>
                   <input
                     type="number"
-                    value={formData.delivery_price}
-                    onChange={(e) => setFormData({ ...formData, delivery_price: Number(e.target.value) })}
+                    value={formData.delivery_price ?? ''}
+                    onChange={(e) => setFormData({ ...formData, delivery_price: e.target.value === '' ? null : Number(e.target.value) })}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Не указана"
                     min="0"
                     step="10"
                   />
@@ -439,9 +440,10 @@ const RentalModal: React.FC<RentalModalProps> = ({
                   </label>
                   <input
                     type="number"
-                    value={formData.delivery_costs}
-                    onChange={(e) => setFormData({ ...formData, delivery_costs: Number(e.target.value) })}
+                    value={formData.delivery_costs ?? ''}
+                    onChange={(e) => setFormData({ ...formData, delivery_costs: e.target.value === '' ? null : Number(e.target.value) })}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Не указаны"
                     min="0"
                     step="10"
                   />

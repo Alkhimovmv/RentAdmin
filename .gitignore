@@ -35,6 +35,9 @@ yarn-error.log*
 *.db
 *.sqlite
 demo-data.json
+backups/
+*.sql
+*.sql.gz
 
 # OS generated files
 .DS_Store
@@ -62,3 +65,8 @@ docker-compose.override.yml
 # Temporary files
 tmp/
 temp/
+
+# Process ID files
+*.pid
+backend.pid
+frontend.pid

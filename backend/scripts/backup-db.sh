@@ -40,8 +40,30 @@ DB_USER=${DB_USER:-postgres}
 echo "Starting backup of database: $DB_NAME"
 echo "Backup file: $BACKUP_FILE"
 
-# Создаем бэкап
-PGPASSWORD=$DB_PASSWORD pg_dump -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -F p -f "$BACKUP_FILE"
+# Проверяем, запущена ли база в Docker
+DOCKER_CONTAINER=$(docker ps --filter "name=postgres" --filter "status=running" -q | head -n 1)
+
+if [ ! -z "$DOCKER_CONTAINER" ]; then
+    echo "📦 Using Docker container: $DOCKER_CONTAINER"
+    # Создаем бэкап через Docker
+    docker exec $DOCKER_CONTAINER pg_dump -U $DB_USER -d $DB_NAME -F p > "$BACKUP_FILE"
+else
+    echo "🔌 Using direct PostgreSQL connection"
+    # Проверяем доступность базы данных
+    if ! pg_isready -h $DB_HOST -p $DB_PORT -U $DB_USER > /dev/null 2>&1; then
+        echo "❌ Error: Cannot connect to PostgreSQL at $DB_HOST:$DB_PORT"
+        echo ""
+        echo "Please check:"
+        echo "  1. PostgreSQL is running"
+        echo "  2. Database credentials in .env are correct"
+        echo "  3. If using Docker, container is running: docker ps"
+        echo ""
+        exit 1
+    fi
+
+    # Создаем бэкап через прямое подключение
+    PGPASSWORD=$DB_PASSWORD pg_dump -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -F p -f "$BACKUP_FILE"
+fi
 
 # Проверяем успешность бэкапа
 if [ $? -eq 0 ]; then

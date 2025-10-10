@@ -3,7 +3,7 @@ export interface Equipment {
   name: string;
   quantity: number;
   description?: string;
-  base_price: number;
+  base_price: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -12,7 +12,7 @@ export interface CreateEquipmentDto {
   name: string;
   quantity: number;
   description?: string;
-  base_price: number;
+  base_price: number | null;
 }
 
 export type RentalSource = 'авито' | 'сайт' | 'рекомендация' | 'карты';
@@ -60,7 +60,7 @@ export interface CreateRentalDto {
 export interface Expense {
   id: number;
   description: string;
-  amount: number;
+  amount: number | null;
   date: string;
   category?: string;
   created_at: string;
@@ -69,7 +69,7 @@ export interface Expense {
 
 export interface CreateExpenseDto {
   description: string;
-  amount: number;
+  amount: number | null;
   date: string;
   category?: string;
 }

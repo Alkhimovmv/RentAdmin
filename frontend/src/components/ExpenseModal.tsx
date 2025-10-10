@@ -20,7 +20,7 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({
 }) => {
   const [formData, setFormData] = useState<CreateExpenseDto>({
     description: '',
-    amount: 0,
+    amount: null,
     date: new Date().toISOString().split('T')[0],
     category: '',
   });
@@ -37,7 +37,7 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({
       } else {
         setFormData({
           description: '',
-          amount: 0,
+          amount: null,
           date: new Date().toISOString().split('T')[0],
           category: '',
         });
@@ -51,6 +51,7 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({
   };
 
   const categories = [
+    'Покупка оборудования',
     'Топливо',
     'Ремонт оборудования',
     'Реклама',
@@ -92,13 +93,12 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({
               </label>
               <input
                 type="number"
-                value={formData.amount}
-                onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
+                value={formData.amount ?? ''}
+                onChange={(e) => setFormData({ ...formData, amount: e.target.value === '' ? null : Number(e.target.value) })}
                 className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                required
+                placeholder="Не указана"
                 min="0"
                 step="0.01"
-                placeholder="0.00"
               />
             </div>
 

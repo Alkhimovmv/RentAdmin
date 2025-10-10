@@ -20,7 +20,7 @@ const EquipmentModal: React.FC<EquipmentModalProps> = ({
     name: '',
     quantity: 1,
     description: '',
-    base_price: 0,
+    base_price: null,
   });
 
   const [validationErrors, setValidationErrors] = useState<{
@@ -41,7 +41,7 @@ const EquipmentModal: React.FC<EquipmentModalProps> = ({
           name: '',
           quantity: 1,
           description: '',
-          base_price: 0,
+          base_price: null,
         });
       }
       // Очищаем ошибки валидации при открытии
@@ -136,13 +136,12 @@ const EquipmentModal: React.FC<EquipmentModalProps> = ({
               </label>
               <input
                 type="number"
-                value={formData.base_price}
-                onChange={(e) => setFormData({ ...formData, base_price: Number(e.target.value) })}
+                value={formData.base_price ?? ''}
+                onChange={(e) => setFormData({ ...formData, base_price: e.target.value === '' ? null : Number(e.target.value) })}
                 className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                required
+                placeholder="Не указана"
                 min="0"
                 step="10"
-                placeholder="0"
               />
             </div>
 

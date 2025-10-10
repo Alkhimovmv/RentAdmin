@@ -2,19 +2,34 @@
 
 # Скрипт для автоматического бэкапа базы данных PostgreSQL
 
+# Получаем директорию скрипта
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BACKEND_DIR="$(dirname "$SCRIPT_DIR")"
+
 # Загружаем переменные окружения
-if [ -f ../.env ]; then
-    export $(cat ../.env | grep -v '^#' | xargs)
+if [ -f "$BACKEND_DIR/.env" ]; then
+    export $(cat "$BACKEND_DIR/.env" | grep -v '^#' | xargs)
 fi
 
 # Настройки
-BACKUP_DIR="/home/maxim/RentAdmin/backend/backups"
+BACKUP_DIR="$BACKEND_DIR/backups"
 DATE=$(date +%Y%m%d_%H%M%S)
 BACKUP_FILE="$BACKUP_DIR/rent_admin_$DATE.sql"
 KEEP_DAYS=30  # Хранить бэкапы за последние 30 дней
 
 # Создаем директорию для бэкапов, если её нет
 mkdir -p "$BACKUP_DIR"
+
+# Проверка наличия pg_dump
+if ! command -v pg_dump &> /dev/null; then
+    echo "❌ Error: pg_dump not found!"
+    echo ""
+    echo "Please install PostgreSQL client tools:"
+    echo "  Ubuntu/Debian: sudo apt install postgresql-client"
+    echo "  MacOS: brew install postgresql"
+    echo ""
+    exit 1
+fi
 
 # Параметры подключения
 DB_HOST=${DB_HOST:-localhost}

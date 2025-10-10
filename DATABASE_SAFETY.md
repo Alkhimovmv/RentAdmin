@@ -25,6 +25,16 @@
 
 ## 🔧 Использование
 
+### Установка PostgreSQL client tools (требуется один раз)
+
+```bash
+# Ubuntu/Debian
+sudo apt install postgresql-client
+
+# MacOS
+brew install postgresql
+```
+
 ### Создать бэкап вручную
 ```bash
 cd backend

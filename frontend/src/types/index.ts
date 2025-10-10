@@ -27,9 +27,9 @@ export interface Rental {
   customer_phone: string;
   needs_delivery: boolean;
   delivery_address?: string;
-  rental_price: number;
-  delivery_price: number;
-  delivery_costs: number;
+  rental_price: number | null;
+  delivery_price: number | null;
+  delivery_costs: number | null;
   source: RentalSource;
   comment?: string;
   status: RentalStatus;
@@ -50,9 +50,9 @@ export interface CreateRentalDto {
   customer_phone: string;
   needs_delivery: boolean;
   delivery_address?: string;
-  rental_price: number;
-  delivery_price?: number;
-  delivery_costs?: number;
+  rental_price: number | null;
+  delivery_price?: number | null;
+  delivery_costs?: number | null;
   source: RentalSource;
   comment?: string;
 }

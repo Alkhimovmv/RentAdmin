@@ -71,7 +71,8 @@
       "Bash(docker exec:*)",
       "Bash(docker restart:*)",
       "Bash(./force-frontend-update.sh:*)",
-      "Read(//home/maxim/**)"
+      "Read(//home/maxim/**)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []

@@ -74,7 +74,8 @@
       "Read(//home/maxim/**)",
       "Bash(ls:*)",
       "Bash(git push:*)",
-      "Bash(gunzip:*)"
+      "Bash(gunzip:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []

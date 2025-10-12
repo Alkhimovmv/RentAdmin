@@ -162,7 +162,7 @@ echo ""
 echo "🔍 Проверка работоспособности..."
 
 # Проверка API
-if curl -s http://localhost/api/health > /dev/null 2>&1; then
+if curl -s http://localhost:8080/api/health > /dev/null 2>&1; then
     echo "✅ API работает"
 else
     echo "❌ API не отвечает"
@@ -170,7 +170,7 @@ else
 fi
 
 # Проверка frontend
-if curl -s http://localhost/ | grep -q "html"; then
+if curl -s http://localhost:8080/ | grep -q "html"; then
     echo "✅ Frontend доступен"
 else
     echo "❌ Frontend недоступен"
@@ -183,9 +183,11 @@ echo "🎉 RentAdmin успешно перезапущен!"
 echo "================================================================"
 echo ""
 echo "📍 Приложение доступно:"
-echo "   🌐 Внешний доступ: http://87.242.103.146"
-echo "   🏠 Локальный доступ: http://localhost"
-echo "   📊 Статус API: http://localhost/api/health"
+echo "   🌐 Внешний доступ: http://87.242.103.146:8080"
+echo "   🏠 Локальный доступ: http://localhost:8080"
+echo "   📊 Статус API: http://localhost:8080/api/health"
+echo ""
+echo "ℹ️  Порт 8080 используется для избежания конфликта с VozmiMenja (порт 80)"
 echo ""
 echo "📝 Команды управления:"
 echo "   ./stop-vm.sh    - остановка приложения"

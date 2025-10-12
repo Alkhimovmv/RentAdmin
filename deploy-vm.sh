@@ -10,8 +10,11 @@ echo "🚀 Полное развертывание RentAdmin на VM..."
 echo "=========================================="
 echo ""
 
-# 1. Остановка всех процессов
-echo "🛑 Остановка всех процессов..."
+# 1. Остановка процессов ТОЛЬКО RentAdmin
+echo "🛑 Остановка процессов RentAdmin (безопасно, не трогает другие проекты)..."
+
+# Получаем путь к проекту
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Останавливаем docker контейнеры
 if docker ps -q --filter "name=rentadmin" | grep -q .; then
@@ -19,33 +22,57 @@ if docker ps -q --filter "name=rentadmin" | grep -q .; then
     docker-compose -f docker-compose.host.yml down 2>/dev/null || true
 fi
 
-# Останавливаем backend процессы
+# Останавливаем backend процессы через PID файл
 echo "🔴 Останавливаем backend процессы..."
 if [ -f backend.pid ]; then
     BACKEND_PID=$(cat backend.pid)
     if kill -0 $BACKEND_PID 2>/dev/null; then
         kill $BACKEND_PID
         echo "Остановлен backend процесс (PID: $BACKEND_PID)"
+        sleep 2
+        # Принудительно если не остановился
+        if kill -0 $BACKEND_PID 2>/dev/null; then
+            kill -9 $BACKEND_PID 2>/dev/null || true
+        fi
     fi
     rm backend.pid
 fi
 
-# Дополнительная очистка процессов
-pkill -f "node.*dist/server.js" 2>/dev/null || true
-pkill -f "vite" 2>/dev/null || true
-
-# Освобождаем порты
-if lsof -ti :3001 >/dev/null 2>&1; then
-    echo "Освобождаем порт 3001..."
-    lsof -ti :3001 | xargs -r kill -9
+# Останавливаем ТОЛЬКО процессы из директории RentAdmin
+PIDS=$(ps aux | grep node | grep -E "(RentAdmin|rentadmin)" | grep -v grep | awk '{print $2}')
+if [ ! -z "$PIDS" ]; then
+    for PID in $PIDS; do
+        PROCESS_CWD=$(readlink -f /proc/$PID/cwd 2>/dev/null || echo "")
+        if [[ "$PROCESS_CWD" == *"RentAdmin"* ]] || [[ "$PROCESS_CWD" == *"rentadmin"* ]]; then
+            echo "Остановка процесса $PID ($PROCESS_CWD)"
+            kill $PID 2>/dev/null || true
+        fi
+    done
+    sleep 2
+    # Принудительно если не остановились
+    for PID in $PIDS; do
+        if ps -p $PID > /dev/null 2>&1; then
+            PROCESS_CWD=$(readlink -f /proc/$PID/cwd 2>/dev/null || echo "")
+            if [[ "$PROCESS_CWD" == *"RentAdmin"* ]] || [[ "$PROCESS_CWD" == *"rentadmin"* ]]; then
+                kill -9 $PID 2>/dev/null || true
+            fi
+        fi
+    done
 fi
 
-if lsof -ti :5173 >/dev/null 2>&1; then
-    echo "Освобождаем порт 5173..."
-    lsof -ti :5173 | xargs -r kill -9
+# Освобождаем порт 3001 ТОЛЬКО если это RentAdmin
+if command -v lsof &> /dev/null && lsof -ti :3001 >/dev/null 2>&1; then
+    PROCESS_ON_3001=$(lsof -ti :3001)
+    PROCESS_PATH=$(readlink -f /proc/$PROCESS_ON_3001/cwd 2>/dev/null || echo "")
+    if [[ "$PROCESS_PATH" == *"RentAdmin"* ]]; then
+        echo "Освобождаем порт 3001 (RentAdmin)..."
+        kill -9 $PROCESS_ON_3001 2>/dev/null || true
+    else
+        echo "ℹ️  Порт 3001 используется другим проектом, не трогаем"
+    fi
 fi
 
-echo "✅ Все процессы остановлены"
+echo "✅ Процессы RentAdmin остановлены (VozmiMenja продолжает работать)"
 echo ""
 
 # 2. Полная пересборка backend
@@ -187,7 +214,7 @@ echo ""
 
 # Проверка health endpoint
 echo "1️⃣  Проверка health endpoint..."
-if curl -s http://localhost/health | grep -q "healthy"; then
+if curl -s http://localhost:8080/health | grep -q "healthy"; then
     echo "   ✅ Health endpoint работает"
 else
     echo "   ❌ Health endpoint не отвечает"
@@ -195,7 +222,7 @@ fi
 
 # Проверка API
 echo "2️⃣  Проверка API..."
-if curl -s http://localhost/api/health > /dev/null 2>&1; then
+if curl -s http://localhost:8080/api/health > /dev/null 2>&1; then
     echo "   ✅ API доступен"
 else
     echo "   ❌ API недоступен"
@@ -203,7 +230,7 @@ fi
 
 # Проверка frontend
 echo "3️⃣  Проверка frontend..."
-if curl -s http://localhost/ | grep -q "html"; then
+if curl -s http://localhost:8080/ | grep -q "html"; then
     echo "   ✅ Frontend доступен"
 else
     echo "   ❌ Frontend недоступен"
@@ -214,18 +241,23 @@ echo "🎉 Развертывание завершено успешно!"
 echo "=================================="
 echo ""
 echo "📍 Доступ к приложению:"
-echo "   🌐 VM адрес: http://87.242.103.146"
-echo "   🏠 Локальный адрес: http://localhost"
+echo "   🌐 VM адрес: http://87.242.103.146:8080"
+echo "   🏠 Локальный адрес: http://localhost:8080"
 echo ""
 echo "📊 Статус компонентов:"
-echo "   Backend: http://87.242.103.146/api/health"
-echo "   Frontend: http://87.242.103.146"
-echo "   Nginx: работает через Docker"
+echo "   Backend: http://87.242.103.146:8080/api/health"
+echo "   Frontend: http://87.242.103.146:8080"
+echo "   Nginx: работает через Docker (порт 8080)"
+echo ""
+echo "ℹ️  Порты на сервере:"
+echo "   VozmiMenja: http://87.242.103.146 (порт 80)"
+echo "   RentAdmin: http://87.242.103.146:8080 (порт 8080)"
 echo ""
 echo "📝 Управление:"
 echo "   Логи backend: tail -f backend/backend.log"
-echo "   Остановка: ./stop-vm.sh"
-echo "   Обновление фронтенда: ./update-frontend.sh"
+echo "   Остановка: ./stop-rentadmin.sh"
+echo "   Перезапуск: ./restart-vm.sh"
+echo "   Обновление фронтенда: ./quick-frontend-update.sh"
 echo ""
-echo "💡 Примечание: Оба сервиса работают на VM"
+echo "💡 База данных сохраняется при перезапуске"
 echo ""

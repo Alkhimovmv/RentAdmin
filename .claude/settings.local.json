@@ -72,7 +72,9 @@
       "Bash(docker restart:*)",
       "Bash(./force-frontend-update.sh:*)",
       "Read(//home/maxim/**)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(git push:*)",
+      "Bash(gunzip:*)"
     ],
     "deny": [],
     "ask": []

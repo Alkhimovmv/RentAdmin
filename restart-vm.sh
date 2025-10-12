@@ -18,25 +18,42 @@ echo "🛑 Шаг 1/5: Остановка всех процессов..."
 echo "   - Остановка nginx контейнера..."
 docker-compose -f docker-compose.host.yml down 2>/dev/null || true
 
-# Остановка backend процессов
-echo "   - Остановка backend процессов..."
+# Остановка backend процессов ТОЛЬКО из RentAdmin
+echo "   - Остановка backend процессов RentAdmin..."
+
+# Получаем путь к проекту
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 if [ -f backend.pid ]; then
     BACKEND_PID=$(cat backend.pid)
     if kill -0 $BACKEND_PID 2>/dev/null; then
+        echo "   - Остановка процесса по PID: $BACKEND_PID"
         kill $BACKEND_PID 2>/dev/null || true
+        sleep 2
+        # Если не убился - принудительно
+        if kill -0 $BACKEND_PID 2>/dev/null; then
+            kill -9 $BACKEND_PID 2>/dev/null || true
+        fi
     fi
     rm backend.pid
 fi
 
-# Принудительная остановка всех связанных процессов
-pkill -f "node.*dist/server.js" 2>/dev/null || true
-pkill -f "ts-node.*server.ts" 2>/dev/null || true
-pkill -f "nodemon.*server.ts" 2>/dev/null || true
+# Остановка процессов ТОЛЬКО из директории RentAdmin
+ps aux | grep node | grep "$PROJECT_DIR" | grep -v grep | awk '{print $2}' | xargs -r kill 2>/dev/null || true
+sleep 2
+ps aux | grep node | grep "$PROJECT_DIR" | grep -v grep | awk '{print $2}' | xargs -r kill -9 2>/dev/null || true
 
-# Освобождение порта 3001
+# Освобождение порта 3001 ТОЛЬКО если это процесс RentAdmin
 if lsof -i :3001 > /dev/null 2>&1; then
-    echo "   - Освобождение порта 3001..."
-    lsof -ti :3001 | xargs -r kill -9 2>/dev/null || true
+    PROCESS_ON_3001=$(lsof -ti :3001)
+    PROCESS_PATH=$(readlink -f /proc/$PROCESS_ON_3001/cwd 2>/dev/null || echo "")
+
+    if [[ "$PROCESS_PATH" == *"RentAdmin"* ]]; then
+        echo "   - Освобождение порта 3001 (RentAdmin процесс)..."
+        kill -9 $PROCESS_ON_3001 2>/dev/null || true
+    else
+        echo "   ⚠️  Порт 3001 занят другим проектом ($PROCESS_PATH), пропускаем"
+    fi
 fi
 
 sleep 3

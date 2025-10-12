@@ -82,7 +82,17 @@ if [ "$DB_TYPE" = "sqlite" ]; then
             echo "Decompressing and restoring..."
             # Удаляем старую БД и создаем новую из дампа
             rm -f "$SQLITE_DB"
-            gunzip -c "$BACKUP_FILE" | sqlite3 "$SQLITE_DB"
+
+            # Проверяем формат бэкапа по расширению
+            if [[ "$BACKUP_FILE" == *.sql.sqlite.gz ]]; then
+                # Старый формат - это копия файла БД, просто распаковываем
+                echo "Using legacy format (direct file copy)"
+                gunzip -c "$BACKUP_FILE" > "$SQLITE_DB"
+            else
+                # Новый формат - SQL дамп, восстанавливаем через sqlite3
+                echo "Using SQL dump format"
+                gunzip -c "$BACKUP_FILE" | sqlite3 "$SQLITE_DB"
+            fi
         else
             rm -f "$SQLITE_DB"
             sqlite3 "$SQLITE_DB" < "$BACKUP_FILE"

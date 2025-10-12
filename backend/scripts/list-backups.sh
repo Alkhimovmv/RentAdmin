@@ -13,8 +13,8 @@ if [ ! -d "$BACKUP_DIR" ]; then
     exit 1
 fi
 
-# Подсчитываем количество бэкапов
-BACKUP_COUNT=$(ls -1 "$BACKUP_DIR"/*.sql.gz 2>/dev/null | wc -l)
+# Подсчитываем количество бэкапов (все форматы)
+BACKUP_COUNT=$(ls -1 "$BACKUP_DIR"/*.sql.gz "$BACKUP_DIR"/*.sql.sqlite.gz 2>/dev/null | wc -l)
 
 if [ $BACKUP_COUNT -eq 0 ]; then
     echo "📭 Нет доступных бэкапов"
@@ -26,8 +26,8 @@ echo ""
 echo "📋 Список бэкапов (от новых к старым):"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# Выводим список бэкапов
-ls -lht "$BACKUP_DIR"/*.sql.gz 2>/dev/null | awk '{
+# Выводим список бэкапов (все форматы)
+ls -lht "$BACKUP_DIR"/*.sql.gz "$BACKUP_DIR"/*.sql.sqlite.gz 2>/dev/null | awk '{
     size = $5
     date = $6 " " $7 " " $8
     filename = $9
@@ -42,7 +42,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 # Показываем последний бэкап отдельно
 echo ""
 echo "🔹 Последний бэкап:"
-LATEST=$(ls -t "$BACKUP_DIR"/*.sql.gz 2>/dev/null | head -1)
+LATEST=$(ls -t "$BACKUP_DIR"/*.sql.gz "$BACKUP_DIR"/*.sql.sqlite.gz 2>/dev/null | head -1)
 if [ ! -z "$LATEST" ]; then
     LATEST_SIZE=$(du -h "$LATEST" | cut -f1)
     LATEST_DATE=$(stat -c %y "$LATEST" 2>/dev/null || stat -f "%Sm" "$LATEST")

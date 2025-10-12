@@ -60,6 +60,11 @@ pids
 ehthumbs.db
 Thumbs.db
 
-# Database
+# Database files
 *.sqlite
+*.sqlite3
 *.db
+dev.sqlite3
+production.sqlite3
+*.sqlite3.backup*
+*.before_restore_*

@@ -123,6 +123,11 @@ if [ $? -eq 0 ]; then
     # Подсчитываем количество оставшихся бэкапов
     BACKUP_COUNT=$(ls -1 "$BACKUP_DIR"/*.sql.gz 2>/dev/null | wc -l)
     echo "Total backups: $BACKUP_COUNT"
+
+    # Показываем последний бэкап
+    echo ""
+    echo "📋 Latest backup:"
+    ls -lht "$BACKUP_DIR"/*.sql.gz 2>/dev/null | head -1 | awk '{print "   " $9 " (" $5 ", " $6 " " $7 " " $8 ")"}'
 else
     echo "Backup failed!"
     exit 1

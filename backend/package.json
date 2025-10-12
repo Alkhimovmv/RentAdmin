@@ -12,6 +12,7 @@
     "db:reset": "knex migrate:rollback && knex migrate:latest",
     "db:backup": "./scripts/backup-db.sh",
     "db:restore": "./scripts/restore-db.sh",
+    "db:list": "./scripts/list-backups.sh",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix"
   },

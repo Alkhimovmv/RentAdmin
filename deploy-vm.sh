@@ -16,9 +16,9 @@ echo "🛑 Остановка процессов RentAdmin (безопасно, 
 # Получаем путь к проекту
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Останавливаем docker контейнеры
+# Останавливаем docker контейнеры (если они еще используются)
 if docker ps -q --filter "name=rentadmin" | grep -q .; then
-    echo "🐳 Останавливаем Docker контейнеры..."
+    echo "🐳 Останавливаем старые Docker контейнеры..."
     docker-compose -f docker-compose.host.yml down 2>/dev/null || true
 fi
 
@@ -180,32 +180,59 @@ done
 cd ..
 echo ""
 
-# 5. Запуск nginx на VM
-echo "🐳 Запуск nginx для VM..."
-docker-compose -f docker-compose.host.yml up -d
+# 5. Развертывание frontend в /var/www/html/admin/
+echo "🌐 Развертывание frontend на /admin/..."
 
-# Ожидание запуска nginx
-echo "⏳ Ожидание запуска nginx..."
-sleep 2
+# Создаем директорию для frontend
+sudo mkdir -p /var/www/html/admin/
 
-# Проверка nginx с повторными попытками
-NGINX_READY=0
-for i in {1..10}; do
-    if docker ps --filter "name=rentadmin_nginx" --filter "status=running" | grep -q rentadmin_nginx; then
-        NGINX_READY=1
-        echo "✅ Nginx запущен"
-        break
-    fi
-    sleep 1
-done
+# Копируем собранный frontend
+echo "📦 Копирование файлов frontend..."
+sudo rm -rf /var/www/html/admin/*
+sudo cp -r frontend/dist/* /var/www/html/admin/
 
-if [ $NGINX_READY -eq 0 ]; then
-    echo "❌ Nginx не запустился за 10 секунд"
-    echo "📋 Логи Docker:"
-    docker logs rentadmin_nginx --tail 20
+# Проверяем, что файлы скопировались
+if [ ! -f "/var/www/html/admin/index.html" ]; then
+    echo "❌ Файлы frontend не скопировались"
     exit 1
 fi
 
+echo "✅ Frontend развернут в /var/www/html/admin/"
+
+# Настраиваем nginx
+echo "⚙️  Настройка nginx..."
+
+# Создаем бэкап текущей конфигурации
+if [ -f "/etc/nginx/nginx.conf" ]; then
+    sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.backup.$(date +%Y%m%d_%H%M%S)
+fi
+
+# Копируем нашу конфигурацию
+sudo cp nginx-system.conf /etc/nginx/nginx.conf
+
+# Проверяем конфигурацию nginx
+if ! sudo nginx -t; then
+    echo "❌ Ошибка конфигурации nginx"
+    echo "📋 Восстанавливаем старую конфигурацию..."
+    sudo cp /etc/nginx/nginx.conf.backup.$(date +%Y%m%d)* /etc/nginx/nginx.conf 2>/dev/null || true
+    exit 1
+fi
+
+echo "✅ Конфигурация nginx проверена"
+
+# Перезапускаем nginx
+echo "🔄 Перезапуск nginx..."
+sudo systemctl restart nginx
+
+# Проверяем статус nginx
+if ! sudo systemctl is-active --quiet nginx; then
+    echo "❌ Nginx не запустился"
+    echo "📋 Статус nginx:"
+    sudo systemctl status nginx --no-pager
+    exit 1
+fi
+
+echo "✅ Nginx запущен успешно"
 echo ""
 
 # 6. Проверка работоспособности
@@ -214,7 +241,7 @@ echo ""
 
 # Проверка health endpoint
 echo "1️⃣  Проверка health endpoint..."
-if curl -s http://localhost:8080/health | grep -q "healthy"; then
+if curl -s http://localhost/health | grep -q "healthy"; then
     echo "   ✅ Health endpoint работает"
 else
     echo "   ❌ Health endpoint не отвечает"
@@ -222,15 +249,15 @@ fi
 
 # Проверка API
 echo "2️⃣  Проверка API..."
-if curl -s http://localhost:8080/api/health > /dev/null 2>&1; then
+if curl -s http://localhost/api/health > /dev/null 2>&1; then
     echo "   ✅ API доступен"
 else
     echo "   ❌ API недоступен"
 fi
 
 # Проверка frontend
-echo "3️⃣  Проверка frontend..."
-if curl -s http://localhost:8080/ | grep -q "html"; then
+echo "3️⃣  Проверка frontend на /admin/..."
+if curl -s http://localhost/admin/ | grep -q "html"; then
     echo "   ✅ Frontend доступен"
 else
     echo "   ❌ Frontend недоступен"
@@ -241,23 +268,25 @@ echo "🎉 Развертывание завершено успешно!"
 echo "=================================="
 echo ""
 echo "📍 Доступ к приложению:"
-echo "   🌐 VM адрес: http://87.242.103.146:8080"
-echo "   🏠 Локальный адрес: http://localhost:8080"
+echo "   🌐 RentAdmin: http://87.242.103.146/admin/"
+echo "   🏠 Локальный доступ: http://localhost/admin/"
 echo ""
 echo "📊 Статус компонентов:"
-echo "   Backend: http://87.242.103.146:8080/api/health"
-echo "   Frontend: http://87.242.103.146:8080"
-echo "   Nginx: работает через Docker (порт 8080)"
+echo "   Backend: http://87.242.103.146/api/health"
+echo "   Frontend: http://87.242.103.146/admin/"
+echo "   Nginx: системный nginx на порту 80"
 echo ""
-echo "ℹ️  Порты на сервере:"
-echo "   VozmiMenja: http://87.242.103.146 (порт 80)"
-echo "   RentAdmin: http://87.242.103.146:8080 (порт 8080)"
+echo "ℹ️  Структура на сервере:"
+echo "   http://87.242.103.146/ → Главная страница"
+echo "   http://87.242.103.146/admin/ → RentAdmin"
+echo "   http://87.242.103.146/api/ → RentAdmin API"
+echo "   https://api.vozmimenya.ru/ → VozmiMenja API"
 echo ""
 echo "📝 Управление:"
 echo "   Логи backend: tail -f backend/backend.log"
+echo "   Логи nginx: sudo tail -f /var/log/nginx/error.log"
 echo "   Остановка: ./stop-rentadmin.sh"
 echo "   Перезапуск: ./restart-vm.sh"
-echo "   Обновление фронтенда: ./quick-frontend-update.sh"
 echo ""
 echo "💡 База данных сохраняется при перезапуске"
 echo ""

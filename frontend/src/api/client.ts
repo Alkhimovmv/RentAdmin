@@ -1,20 +1,22 @@
 import axios from 'axios';
 import type { AxiosInstance } from 'axios';
 
+// API URL из переменных окружения или дефолтный
+const DEFAULT_API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+
 // Список возможных API серверов в порядке приоритета
 const API_SERVERS = import.meta.env.MODE === 'development'
   ? [
+      DEFAULT_API_URL,                    // Приоритет - VITE_API_URL
       'http://localhost:3001/api',        // Локальная разработка
       'http://87.242.103.146/api',        // Резервный HTTP сервер
     ]
   : [
-      import.meta.env.VITE_API_URL || 'http://87.242.103.146/api',  // Production - используем переменную окружения
+      DEFAULT_API_URL,  // Production - только VITE_API_URL
     ];
 
-// В production всегда используем VITE_API_URL, без fallback проверок
-let currentApiUrl: string = import.meta.env.MODE === 'production'
-  ? (import.meta.env.VITE_API_URL || 'http://87.242.103.146/api')
-  : API_SERVERS[0];
+// Текущий API URL
+let currentApiUrl: string = DEFAULT_API_URL;
 
 // Функция для проверки доступности API сервера
 async function checkServerHealth(baseURL: string): Promise<boolean> {

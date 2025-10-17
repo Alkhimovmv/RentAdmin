@@ -29,7 +29,7 @@ app.use(helmet());
 const corsOrigin = process.env.CORS_ORIGIN?.trim();
 const allowedOrigins = (process.env.NODE_ENV === 'development'
   ? [corsOrigin, 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5173', 'http://localhost:3000', 'http://87.242.103.146']
-  : [corsOrigin, 'http://87.242.103.146', 'http://localhost']
+  : [corsOrigin, 'http://87.242.103.146', 'http://localhost', 'https://vozmimenya.ru', 'http://vozmimenya.ru']
 ).filter((origin): origin is string => origin !== undefined);
 
 logger.info(`CORS origins: ${JSON.stringify(allowedOrigins)}`);

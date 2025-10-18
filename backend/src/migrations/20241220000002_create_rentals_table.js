@@ -8,9 +8,9 @@ exports.up = function(knex) {
     table.string('customer_phone').notNullable();
     table.boolean('needs_delivery').defaultTo(false);
     table.text('delivery_address');
-    table.decimal('rental_price', 10, 2).notNullable();
-    table.decimal('delivery_price', 10, 2).defaultTo(0);
-    table.decimal('delivery_costs', 10, 2).defaultTo(0);
+    table.decimal('rental_price', 10, 2).nullable();
+    table.decimal('delivery_price', 10, 2).nullable();
+    table.decimal('delivery_costs', 10, 2).nullable();
     table.enum('source', ['авито', 'сайт', 'рекомендация', 'карты']).notNullable();
     table.text('comment');
     table.enum('status', ['pending', 'active', 'completed', 'overdue']).defaultTo('pending');
